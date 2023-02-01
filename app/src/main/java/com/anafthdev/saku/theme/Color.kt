@@ -1,4 +1,4 @@
-package com.anafthdev.saku.ui.theme
+package com.anafthdev.saku.theme
 
 import androidx.compose.ui.graphics.Color
 

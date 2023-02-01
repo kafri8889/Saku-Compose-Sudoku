@@ -1,4 +1,4 @@
-package com.anafthdev.saku.ui.theme
+package com.anafthdev.saku.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle

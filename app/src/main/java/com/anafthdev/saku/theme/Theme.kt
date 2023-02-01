@@ -1,4 +1,4 @@
-package com.anafthdev.saku.ui.theme
+package com.anafthdev.saku.theme
 
 import android.app.Activity
 import android.os.Build
