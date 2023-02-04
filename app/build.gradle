@@ -10,7 +10,7 @@ plugins {
 }
 
 android {
-    namespace 'com.anafthdev.remindme'
+    namespace 'com.anafthdev.saku'
     compileSdk 33
 
     defaultConfig {
