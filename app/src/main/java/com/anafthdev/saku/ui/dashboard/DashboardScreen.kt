@@ -34,7 +34,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.anafthdev.remindme.R
+import com.anafthdev.saku.R
 import com.anafthdev.saku.data.GameMode
 import com.anafthdev.saku.data.SakuDestination
 import com.anafthdev.saku.uicomponent.GameModeSelector
