@@ -1,10 +1,10 @@
 package com.anafthdev.saku.extension
 
-fun <T> Collection<T>.to2DArray(len: Int): List<List<T>> {
-	val result = arrayListOf<ArrayList<T>>()
+fun <E> Collection<E>.to2DArray(len: Int): List<List<E>> {
+	val result = arrayListOf<ArrayList<E>>()
 	
 	var counter = 1
-	var value = arrayListOf<T>()
+	var value = arrayListOf<E>()
 	forEach { t ->
 		if (counter == len) {
 			counter = 1
@@ -21,11 +21,11 @@ fun <T> Collection<T>.to2DArray(len: Int): List<List<T>> {
 	return result
 }
 
-fun <T> Collection<Collection<T>>.to1DArray(): List<T> {
-	val result = arrayListOf<T>()
+fun <E> Collection<Collection<E>>.to1DArray(): List<E> {
+	val result = arrayListOf<E>()
 	
 	forEach { inner ->
-		inner.forEach { t -> result.add(t) }
+		inner.forEach { e -> result.add(e) }
 	}
 	
 	return result
