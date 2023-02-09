@@ -20,6 +20,7 @@ import com.anafthdev.saku.data.Cells
 import com.anafthdev.saku.data.GameMode
 import com.anafthdev.saku.extension.hourMinuteFormat
 import com.anafthdev.saku.uicomponent.AnimatedTextByChar
+import com.anafthdev.saku.uicomponent.NumberPad
 import com.anafthdev.saku.uicomponent.SudokuBoard
 
 @Composable
@@ -47,6 +48,13 @@ fun GameScreen(
 			modifier = Modifier
 				.fillMaxWidth()
 				.aspectRatio(1f / 1f)
+		)
+		
+		Spacer(modifier = Modifier.height(16.dp))
+		
+		NumberPad(
+			selectedNumber = viewModel.selectedNumber,
+			onNumberSelected = viewModel::updateSelectedNumber
 		)
 	}
 	

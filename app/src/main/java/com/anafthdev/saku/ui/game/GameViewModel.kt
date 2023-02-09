@@ -11,6 +11,9 @@ import javax.inject.Inject
 @HiltViewModel
 class GameViewModel @Inject constructor(): ViewModel() {
 	
+	var selectedNumber by mutableStateOf(1)
+		private set
+	
 	var second by mutableStateOf(0)
 		private set
 	
@@ -19,6 +22,10 @@ class GameViewModel @Inject constructor(): ViewModel() {
 	
 	var gameMode by mutableStateOf(GameMode.Easy)
 		private set
+	
+	fun updateSelectedNumber(n: Int) {
+		selectedNumber = n
+	}
 	
 	fun updateSecond(s: Int) {
 		second = s
