@@ -193,7 +193,7 @@ class Sudoku {
 		}
 	}
 	
-	fun getBoard(): Array<IntArray> {
+	fun printBoard(): Array<IntArray> {
 		fillValues()
 		
 		for (i in 0 until numRowOrColumn) {

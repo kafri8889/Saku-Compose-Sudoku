@@ -119,9 +119,9 @@ fun DashboardScreen(
 			}
 		}
 		
-		Spacer(modifier = Modifier.height(16.dp))
-		
-		OpenSourceText()
+//		Spacer(modifier = Modifier.height(16.dp))
+//
+//		OpenSourceText()
 	}
 }
 
