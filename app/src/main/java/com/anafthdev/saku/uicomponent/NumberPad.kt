@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -39,8 +40,10 @@ fun NumberPad(
 		modifier = modifier
 	) {
 		for (i in 1..9) {
+			val selected = selectedNumber == i
+			
 			val backgroundColor by animateColorAsState(
-				targetValue = if (selectedNumber == i) MaterialTheme.colorScheme.primary else Color.Transparent,
+				targetValue = if (selected) MaterialTheme.colorScheme.primary else Color.Transparent,
 				animationSpec = tween(500)
 			)
 			
@@ -56,11 +59,17 @@ fun NumberPad(
 					.border(
 						width = 1.dp,
 						shape = CircleShape,
-						color = if (selectedNumber != i) MaterialTheme.colorScheme.outline else Color.Transparent
+						color = if (!selected) MaterialTheme.colorScheme.outline else Color.Transparent
 					)
 					.clickable { onNumberSelected(i) }
 			) {
-				Text(text = i.toString())
+				Text(
+					text = i.toString(),
+					style = LocalTextStyle.current.copy(
+						color = if (selected) MaterialTheme.colorScheme.background
+						else MaterialTheme.colorScheme.onBackground
+					)
+				)
 			}
 		}
 	}
