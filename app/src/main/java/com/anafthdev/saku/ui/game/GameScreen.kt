@@ -20,7 +20,6 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.anafthdev.saku.component.ObserveLifecycle
 import com.anafthdev.saku.data.Cells
-import com.anafthdev.saku.data.GameMode
 import com.anafthdev.saku.extension.hourMinuteFormat
 import com.anafthdev.saku.uicomponent.AnimatedTextByChar
 import com.anafthdev.saku.uicomponent.NumberPad
@@ -76,14 +75,4 @@ fun GameScreen(
 		)
 	}
 	
-}
-
-@Composable
-fun GameScreenHeader(
-	second: Int,
-	minute: Int,
-	gameMode: GameMode,
-	modifier: Modifier = Modifier
-) {
-
 }
