@@ -18,6 +18,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.anafthdev.saku.component.ObserveLifecycle
 import com.anafthdev.saku.data.Cells
 import com.anafthdev.saku.data.GameMode
 import com.anafthdev.saku.extension.hourMinuteFormat
@@ -30,6 +31,11 @@ fun GameScreen(
 	viewModel: GameViewModel,
 	navController: NavController
 ) {
+	
+	ObserveLifecycle(
+		onResume = viewModel::resume,
+		onPause = viewModel::pause
+	)
 
 	Column(
 		modifier = Modifier
@@ -38,10 +44,19 @@ fun GameScreen(
 			.fillMaxSize()
 			.systemBarsPadding()
 	) {
-		GameScreenHeader(
-			second = viewModel.second,
-			minute = viewModel.minute,
-			gameMode = viewModel.gameMode
+		AnimatedTextByChar(
+			text = "${hourMinuteFormat(viewModel.minute)}:${hourMinuteFormat(viewModel.second)}",
+			style = MaterialTheme.typography.titleLarge.copy(
+				fontWeight = FontWeight.ExtraBold
+			)
+		)
+		
+		Text(
+			text = viewModel.gameMode.name,
+			style = MaterialTheme.typography.titleLarge.copy(
+				fontWeight = FontWeight.Light,
+				color = Color.Gray
+			)
 		)
 		
 		Spacer(modifier = Modifier.height(16.dp))
@@ -70,20 +85,5 @@ fun GameScreenHeader(
 	gameMode: GameMode,
 	modifier: Modifier = Modifier
 ) {
-	Column(modifier = modifier) {
-		AnimatedTextByChar(
-			text = "${hourMinuteFormat(second)}:${hourMinuteFormat(minute)}",
-			style = MaterialTheme.typography.titleLarge.copy(
-				fontWeight = FontWeight.ExtraBold
-			)
-		)
-		
-		Text(
-			text = gameMode.name,
-			style = MaterialTheme.typography.titleLarge.copy(
-				fontWeight = FontWeight.Light,
-				color = Color.Gray
-			)
-		)
-	}
+
 }
