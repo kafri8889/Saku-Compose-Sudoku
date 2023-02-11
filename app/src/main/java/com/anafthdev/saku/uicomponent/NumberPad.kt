@@ -4,14 +4,15 @@ import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -19,11 +20,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.dp
-import com.google.accompanist.flowlayout.FlowCrossAxisAlignment
-import com.google.accompanist.flowlayout.FlowMainAxisAlignment
-import com.google.accompanist.flowlayout.FlowRow
-import com.google.accompanist.flowlayout.SizeMode
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
@@ -32,11 +30,12 @@ fun NumberPad(
 	modifier: Modifier = Modifier,
 	onNumberSelected: (Int) -> Unit
 ) {
-
+	
+	val config = LocalConfiguration.current
+	
 	FlowRow(
-		mainAxisSize = SizeMode.Expand,
-		crossAxisAlignment = FlowCrossAxisAlignment.Center,
-		lastLineMainAxisAlignment = FlowMainAxisAlignment.Center,
+		horizontalArrangement = Arrangement.Center,
+		maxItemsInEachRow = 5,
 		modifier = modifier
 	) {
 		for (i in 1..9) {
@@ -51,19 +50,20 @@ fun NumberPad(
 				contentAlignment = Alignment.Center,
 				modifier = Modifier
 					.padding(4.dp)
-					.size(40.dp)
-					.clip(CircleShape)
+					.size(config.smallestScreenWidthDp.dp / 8f)
+					.clip(RoundedCornerShape(25))
+//					.clipToBounds()
 					.drawBehind {
-						drawCircle(backgroundColor)
+						drawRect(backgroundColor)
 					}
 					.border(
 						width = 1.dp,
-						shape = CircleShape,
+						shape = RoundedCornerShape(25),
 						color = if (!selected) MaterialTheme.colorScheme.outline else Color.Transparent
 					)
 					.clickable { onNumberSelected(i) }
 			) {
-				Text(
+				AutoResizeText(
 					text = i.toString(),
 					style = LocalTextStyle.current.copy(
 						color = if (selected) MaterialTheme.colorScheme.background

@@ -125,3 +125,14 @@ fun SudokuBoard(
 		}
 	}
 }
+
+//class SudokuBoardState() {
+//
+//}
+//
+//@Composable
+//fun rememberSudokuBoardState(): SudokuBoardState {
+//	return remember {
+//		SudokuBoardState()
+//	}
+//}

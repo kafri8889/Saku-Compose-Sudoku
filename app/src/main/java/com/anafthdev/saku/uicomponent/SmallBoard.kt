@@ -1,5 +1,6 @@
 package com.anafthdev.saku.uicomponent
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.offset
@@ -74,6 +75,9 @@ fun SmallBoard(
 							y = (cellSize * row) + (bottomPadding * row)
 						)
 						.size(cellSize)
+						.clickable {
+						
+						}
 //						.background(Color.Red)
 				) {
 					Text("$col, $row")
