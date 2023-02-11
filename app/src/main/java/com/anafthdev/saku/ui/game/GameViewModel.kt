@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.anafthdev.saku.common.CountUpTimer
 import com.anafthdev.saku.data.GameMode
+import com.anafthdev.saku.uicomponent.SudokuGameAction
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -34,6 +35,9 @@ class GameViewModel @Inject constructor(
 	var gameMode by mutableStateOf(GameMode.Easy)
 		private set
 	
+	var selectedGameAction by mutableStateOf(SudokuGameAction.None)
+		private set
+	
 	init {
 		viewModelScope.launch(Dispatchers.IO) {
 			countUpTimer.second.collect { sec ->
@@ -44,6 +48,10 @@ class GameViewModel @Inject constructor(
 				}
 			}
 		}
+	}
+	
+	fun updateSelectedGameAction(action: SudokuGameAction) {
+		selectedGameAction = action
 	}
 	
 	fun updateSelectedNumber(n: Int) {

@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">Saku</string>
+    <string name="undo">Undo</string>
+    <string name="validate">Validate</string>
+    <string name="pencil">Pencil</string>
+    <string name="eraser">Eraser</string>
 </resources>
