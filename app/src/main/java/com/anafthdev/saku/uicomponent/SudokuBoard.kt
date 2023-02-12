@@ -4,6 +4,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -38,90 +39,95 @@ fun SudokuBoard(
 	modifier: Modifier = Modifier
 ) {
 	
-	BoxWithConstraints(
-		modifier = modifier
-			.clip(MaterialTheme.shapes.small)
+	Box(
+		modifier = Modifier
 			.border(
 				width = 2.dp,
 				color = MaterialTheme.colorScheme.onBackground,
 				shape = MaterialTheme.shapes.small
 			)
 	) {
-		val dividerWidth = 2.dp
-		
-		val cellSize = remember(maxWidth, dividerWidth) {
-			(maxWidth / 3) - dividerWidth / 1.5f  // divided by 1.5 to fill the remaining space of the padding
-		}
-		
-		val cells2D = remember(cells) {
-			cells.to2DArray(3)
-		}
-		
-		for ((col, cellsCol) in cells2D.withIndex()) {
-			for ((row, cellRow) in cellsCol.withIndex()) {
-				val endPadding = remember {
-					when {
-						col != 0 -> dividerWidth
-						else -> 0.dp
-					}
-				}
-				
-				val bottomPadding = remember {
-					when {
-						row != 0 -> dividerWidth
-						else -> 0.dp
-					}
-				}
-				
-				Box(
-					modifier = Modifier
-						.offset(
-							x = (cellSize * col) + (endPadding * col),
-							y = (cellSize * row) + (bottomPadding * row)
-						)
-						.size(cellSize)
-				) {
-					SmallBoard(cells = cellRow.subCells)
-				}
+		BoxWithConstraints(
+			modifier = modifier
+				.padding(2.dp)
+				.clip(MaterialTheme.shapes.small)
+		) {
+			val dividerWidth = 2.dp
+			
+			val cellSize = remember(maxWidth, dividerWidth) {
+				(maxWidth / 3) - dividerWidth / 1.5f  // divided by 1.5 to fill the remaining space of the padding
 			}
-		}
-		
-		// Divider
-		for (i in 0 until 2) {
-			val padding = remember {
-				when {
-					i != 0 -> dividerWidth
-					else -> 0.dp
+			
+			val cells2D = remember(cells) {
+				cells.to2DArray(3)
+			}
+			
+			for ((col, cellsCol) in cells2D.withIndex()) {
+				for ((row, cellRow) in cellsCol.withIndex()) {
+					val endPadding = remember {
+						when {
+							row != 0 -> dividerWidth
+							else -> 0.dp
+						}
+					}
+					
+					val bottomPadding = remember {
+						when {
+							col != 0 -> dividerWidth
+							else -> 0.dp
+						}
+					}
+					
+					Box(
+						modifier = Modifier
+							.offset(
+								x = ((cellSize * row) + (endPadding * row)).ceil(),
+								y = ((cellSize * col) + (bottomPadding * col)).ceil()
+							)
+							.size(cellSize)
+					) {
+						SmallBoard(cells = cellRow.subCells)
+					}
 				}
 			}
 			
-			SudokuBoardDivider(
-				color = MaterialTheme.colorScheme.onBackground,
-				maxHeight = maxHeight,
-				thickness = dividerWidth,
-				offsetHorz = {
-					IntOffset(
-						x = 0.dp
-							.toPx()
-							.toInt(),
-						y = (cellSize * (i + 1) + padding)
-							.toPx()
-							.ceil()
-							.toInt()
-					)
-				},
-				offsetVert = {
-					IntOffset(
-						x = (cellSize * (i + 1) + padding)
-							.toPx()
-							.ceil()
-							.toInt(),
-						y = 0.dp
-							.toPx()
-							.toInt()
-					)
+			// Divider
+			for (i in 0 until 2) {
+				val padding = remember {
+					when {
+						i != 0 -> dividerWidth
+						else -> 0.dp
+					}
 				}
-			)
+				
+				SudokuBoardDivider(
+					color = MaterialTheme.colorScheme.onBackground,
+					maxHeight = maxHeight,
+					thickness = dividerWidth,
+					offsetHorz = {
+						IntOffset(
+							x = 0.dp
+								.toPx()
+								.toInt(),
+							y = (cellSize * (i + 1) + padding)
+								.toPx()
+								.ceil()
+								.toInt()
+						)
+					},
+					offsetVert = {
+						IntOffset(
+							x = (cellSize * (i + 1) + padding)
+								.toPx()
+								.ceil()
+								.toInt(),
+							y = 0.dp
+								.toPx()
+								.toInt()
+						)
+					}
+				)
+			}
 		}
 	}
 }

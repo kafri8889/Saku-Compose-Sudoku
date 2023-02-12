@@ -62,14 +62,14 @@ fun SmallBoard(
 			for ((row, cellRow) in cellsCol.withIndex()) {
 				val endPadding = remember {
 					when {
-						col != 0 -> dividerWidth
+						row != 0 -> dividerWidth
 						else -> 0.dp
 					}
 				}
 				
 				val bottomPadding = remember {
 					when {
-						row != 0 -> dividerWidth
+						col != 0 -> dividerWidth
 						else -> 0.dp
 					}
 				}
@@ -78,8 +78,8 @@ fun SmallBoard(
 					contentAlignment = Alignment.Center,
 					modifier = Modifier
 						.offset(
-							x = (cellSize * col) + (endPadding * col),
-							y = (cellSize * row) + (bottomPadding * row)
+							x = ((cellSize * row) + (endPadding * row)).ceil(),
+							y = ((cellSize * col) + (bottomPadding * col)).ceil()
 						)
 						.size(cellSize)
 						.clickable {
