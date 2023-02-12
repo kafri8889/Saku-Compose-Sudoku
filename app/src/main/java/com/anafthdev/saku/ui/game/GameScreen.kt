@@ -1,14 +1,14 @@
 package com.anafthdev.saku.ui.game
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBarsPadding
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -39,56 +39,122 @@ fun GameScreen(
 		onPause = viewModel::pause
 	)
 
-	Column(
-		verticalArrangement = Arrangement.spacedBy(16.dp),
+	LazyColumn(
+		verticalArrangement = Arrangement.SpaceBetween,
+		contentPadding = PaddingValues(16.dp),
 		modifier = Modifier
-			.verticalScroll(rememberScrollState())
-			.padding(8.dp)
 			.fillMaxSize()
 			.systemBarsPadding()
 	) {
-		GameScreenHeader(
-			minute = viewModel.minute,
-			second = viewModel.second,
-			gameMode = viewModel.gameMode
-		)
+		item {
+			GameScreenHeader(
+				minute = viewModel.minute,
+				second = viewModel.second,
+				gameMode = viewModel.gameMode
+			)
+		}
 		
-		SudokuBoard(
-			cells = Cells.bigCells,
-			modifier = Modifier
-				.fillMaxWidth()
-				.aspectRatio(1f / 1f)
-		)
+		item {
+			SudokuBoard(
+				cells = Cells.bigCells,
+				modifier = Modifier
+					.fillMaxWidth()
+					.aspectRatio(1f / 1f)
+			)
+		}
 		
-		NumberPad(
-			selectedNumber = viewModel.selectedNumber,
-			onNumberSelected = viewModel::updateSelectedNumber,
-			modifier = Modifier
-				.fillMaxWidth()
-				.align(Alignment.CenterHorizontally)
-		)
+		item {
+			Box(
+				contentAlignment = Alignment.Center
+			) {
+				NumberPad(
+					selectedNumber = viewModel.selectedNumber,
+					onNumberSelected = viewModel::updateSelectedNumber,
+					modifier = Modifier
+						.fillMaxWidth()
+				)
+			}
+		}
 		
-		SudokuGameAction(
-			selected = viewModel.selectedGameAction,
-			onClick = { action ->
-				if (action in SudokuGameActionDefaults.selectableActions) {
-					viewModel.updateSelectedGameAction(
-						if (viewModel.selectedGameAction == action) SudokuGameAction.None
-						else action
-					)
-				} else {
-					when (action) {
-						SudokuGameAction.Undo -> {}
-						SudokuGameAction.Validate -> {}
-						else -> {}
-					}
-				}
-			},
-			modifier = Modifier
-				.fillMaxWidth()
-				.align(Alignment.CenterHorizontally)
-		)
+		item {
+			Box(
+				contentAlignment = Alignment.Center
+			) {
+				SudokuGameAction(
+					selected = viewModel.selectedGameAction,
+					onClick = { action ->
+						if (action in SudokuGameActionDefaults.selectableActions) {
+							viewModel.updateSelectedGameAction(
+								if (viewModel.selectedGameAction == action) SudokuGameAction.None
+								else action
+							)
+						} else {
+							when (action) {
+								SudokuGameAction.Undo -> {}
+								SudokuGameAction.Validate -> {}
+								else -> {}
+							}
+						}
+					},
+					modifier = Modifier
+						.fillMaxWidth()
+				)
+			}
+		}
 	}
+	
+//	Column(
+//		verticalArrangement = Arrangement.SpaceBetween,
+//		modifier = Modifier
+//			.verticalScroll(rememberScrollState())
+//			.padding(8.dp)
+//			.fillMaxSize()
+//			.systemBarsPadding()
+//	) {
+//		GameScreenHeader(
+//			minute = viewModel.minute,
+//			second = viewModel.second,
+//			gameMode = viewModel.gameMode
+//		)
+//
+//		SudokuBoard(
+//			cells = Cells.bigCells,
+//			modifier = Modifier
+//				.fillMaxWidth()
+//				.aspectRatio(1f / 1f)
+//		)
+//
+//		NumberPad(
+//			selectedNumber = viewModel.selectedNumber,
+//			onNumberSelected = viewModel::updateSelectedNumber,
+//			modifier = Modifier
+//				.fillMaxWidth()
+//				.align(Alignment.CenterHorizontally)
+//		)
+//
+//		SudokuGameAction(
+//			selected = viewModel.selectedGameAction,
+//			onClick = { action ->
+//				if (action in SudokuGameActionDefaults.selectableActions) {
+//					viewModel.updateSelectedGameAction(
+//						if (viewModel.selectedGameAction == action) SudokuGameAction.None
+//						else action
+//					)
+//				} else {
+//					when (action) {
+//						SudokuGameAction.Undo -> {}
+//						SudokuGameAction.Validate -> {}
+//						else -> {}
+//					}
+//				}
+//			},
+//			modifier = Modifier
+//				.fillMaxWidth()
+//				.align(Alignment.CenterHorizontally)
+//		)
+//
+//		Spacer(modifier = Modifier.height(8.dp))
+//	}
 	
 }
 
