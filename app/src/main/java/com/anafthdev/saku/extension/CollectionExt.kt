@@ -30,3 +30,21 @@ fun <E> Collection<Collection<E>>.to1DArray(): List<E> {
 	
 	return result
 }
+
+fun <E> Collection<Collection<E>>.transpose(): List<List<E>> {
+	val first = firstOrNull()
+	val original = map { it.toList() }
+	
+	if (first == null) return original
+	if (first.isEmpty()) return original
+	
+	val transposed: ArrayList<MutableList<E>> = ArrayList(original.map { it.toMutableList() })
+
+	for (i in indices) {
+		for (j in first.indices) {
+			transposed[i][j] = original[j][i]
+		}
+	}
+	
+	return transposed
+}
