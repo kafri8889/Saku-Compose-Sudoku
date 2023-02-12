@@ -1,8 +1,12 @@
 package com.anafthdev.saku.uicomponent
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.MaterialTheme
@@ -11,9 +15,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.anafthdev.saku.data.Cells
 import com.anafthdev.saku.data.model.Cell
 import com.anafthdev.saku.extension.ceil
@@ -32,6 +38,7 @@ fun SmallBoardPreview() {
 	}
 }
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun SmallBoard(
 	cells: List<Cell>,
@@ -80,7 +87,33 @@ fun SmallBoard(
 						}
 //						.background(Color.Red)
 				) {
-					Text("$col, $row")
+					if (cellRow.id != -1) {
+						Text(
+							text = cellRow.id.toString()
+						)
+					} else {
+						val sortedSubCells = remember(cellRow.subCells) {
+							cellRow.subCells.sortedBy { it.id }
+						}
+						
+						FlowRow(
+							maxItemsInEachRow = 3,
+							verticalAlignment = Alignment.CenterVertically,
+							horizontalArrangement = Arrangement.SpaceEvenly,
+							modifier = Modifier
+								.fillMaxSize()
+						) {
+							sortedSubCells.forEach { cell ->
+								Text(
+									text = cell.id.toString(),
+									style = MaterialTheme.typography.labelSmall.copy(
+										fontWeight = FontWeight.Light,
+										fontSize = 8.sp
+									)
+								)
+							}
+						}
+					}
 				}
 			}
 		}
