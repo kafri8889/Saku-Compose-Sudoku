@@ -45,7 +45,7 @@ fun SudokuGameAction(
 		) {
 			SudokuGameActionDefaults.actions.forEach { (iconId, _) ->
 				val backgroundColor by animateColorAsState(
-					targetValue = if (selected.iconId == iconId) MaterialTheme.colorScheme.surfaceVariant
+					targetValue = if (selected.iconId == iconId) MaterialTheme.colorScheme.primary
 					else MaterialTheme.colorScheme.background,
 					animationSpec = tween(500)
 				)
