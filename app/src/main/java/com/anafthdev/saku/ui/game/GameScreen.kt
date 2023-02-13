@@ -12,14 +12,15 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.anafthdev.saku.component.ObserveLifecycle
-import com.anafthdev.saku.data.Cells
 import com.anafthdev.saku.data.GameMode
 import com.anafthdev.saku.extension.hourMinuteFormat
 import com.anafthdev.saku.uicomponent.AnimatedTextByChar
@@ -33,6 +34,10 @@ fun GameScreen(
 	viewModel: GameViewModel,
 	navController: NavController
 ) {
+	
+	LaunchedEffect(Unit) {
+		viewModel.init()
+	}
 	
 	ObserveLifecycle(
 		onResume = viewModel::resume,
@@ -56,7 +61,7 @@ fun GameScreen(
 		
 		item {
 			SudokuBoard(
-				cells = Cells.bigCells,
+				cells = viewModel.board.collectAsStateWithLifecycle().value,
 				modifier = Modifier
 					.fillMaxWidth()
 					.aspectRatio(1f / 1f)

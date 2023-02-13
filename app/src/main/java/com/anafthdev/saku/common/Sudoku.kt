@@ -196,16 +196,17 @@ class Sudoku {
 	fun printBoard(): Array<IntArray> {
 		fillValues()
 		
-		for (i in 0 until numRowOrColumn) {
-			for (j in 0 until numRowOrColumn) {
-				print(board[i][j].toString() + " ")
-				
-				return board
-			}
-			
-			println()
-		}
-		
-		return arrayOf()
+//		for (i in 0 until numRowOrColumn) {
+//			for (j in 0 until numRowOrColumn) {
+//				print(board[i][j].toString() + " ")
+//
+//				return board
+//			}
+//
+//			println()
+//		}
+//
+//		return arrayOf()
+		return board
 	}
 }

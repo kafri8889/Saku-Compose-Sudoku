@@ -19,6 +19,7 @@ import com.anafthdev.saku.data.model.Cell
 import com.anafthdev.saku.extension.ceil
 import com.anafthdev.saku.extension.to2DArray
 import com.anafthdev.saku.theme.SakuTheme
+import timber.log.Timber
 
 @Preview
 @Composable
@@ -33,11 +34,19 @@ fun SudokuBoardPreview() {
 	}
 }
 
+/**
+ * Big cells -> Small cells -> Extra small cells (pencil mode)
+ */
 @Composable
 fun SudokuBoard(
 	cells: List<Cell>,
 	modifier: Modifier = Modifier
 ) {
+	
+	val cells2D = remember(cells) {
+		Timber.i("kontol: $cells")
+		cells.to2DArray(3)
+	}
 	
 	Box(
 		modifier = Modifier
@@ -56,10 +65,6 @@ fun SudokuBoard(
 			
 			val cellSize = remember(maxWidth, dividerWidth) {
 				(maxWidth / 3) - dividerWidth / 1.5f  // divided by 1.5 to fill the remaining space of the padding
-			}
-			
-			val cells2D = remember(cells) {
-				cells.to2DArray(3)
 			}
 			
 			for ((col, cellsCol) in cells2D.withIndex()) {

@@ -5,19 +5,21 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.anafthdev.saku.common.CountUpTimer
+import com.anafthdev.saku.common.GameEngine
 import com.anafthdev.saku.data.GameMode
+import com.anafthdev.saku.data.model.Cell
 import com.anafthdev.saku.uicomponent.SudokuGameAction
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
 class GameViewModel @Inject constructor(
-	private val countUpTimer: CountUpTimer
+	private val gameEngine: GameEngine
 ): ViewModel() {
 	
 	var selectedNumber by mutableStateOf(1)
@@ -38,16 +40,30 @@ class GameViewModel @Inject constructor(
 	var selectedGameAction by mutableStateOf(SudokuGameAction.None)
 		private set
 	
+	private val _board = MutableStateFlow(emptyList<Cell>())
+	val board: StateFlow<List<Cell>> = _board
+	
 	init {
+		gameEngine.setListener(object : GameEngine.EngineListener {
+			override fun onInitialized(board: List<Cell>) {
+				viewModelScope.launch {
+					_board.emit(board)
+				}
+			}
+		})
+		
 		viewModelScope.launch(Dispatchers.IO) {
-			countUpTimer.second.collect { sec ->
-				Timber.i("current second: $sec")
+			gameEngine.second.collect { sec ->
 				withContext(Dispatchers.Main) {
 					second = sec % 60
 					minute = (sec / 60) % 60
 				}
 			}
 		}
+	}
+	
+	fun init() {
+		gameEngine.init(GameMode.Easy)
 	}
 	
 	fun updateSelectedGameAction(action: SudokuGameAction) {
@@ -67,11 +83,11 @@ class GameViewModel @Inject constructor(
 	}
 	
 	fun pause() {
-		countUpTimer.cancel()
+		gameEngine.pause()
 	}
 	
 	fun resume() {
-		countUpTimer.start()
+		gameEngine.resume()
 	}
 	
 }
