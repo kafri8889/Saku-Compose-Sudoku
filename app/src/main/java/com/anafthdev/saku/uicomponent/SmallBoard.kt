@@ -89,7 +89,7 @@ fun SmallBoard(
 				) {
 					if (cellRow.id != -1) {
 						Text(
-							text = cellRow.id.toString()
+							text = if (cellRow.id != 0) cellRow.id.toString() else ""
 						)
 					} else {
 						val sortedSubCells = remember(cellRow.subCells) {
