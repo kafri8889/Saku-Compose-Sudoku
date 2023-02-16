@@ -42,7 +42,8 @@ fun SmallBoardPreview() {
 @Composable
 fun SmallBoard(
 	cells: List<Cell>,
-	modifier: Modifier = Modifier
+	modifier: Modifier = Modifier,
+	onCellClicked: (Cell) -> Unit = {}
 ) {
 
 	BoxWithConstraints(
@@ -82,18 +83,21 @@ fun SmallBoard(
 							y = ((cellSize * col) + (bottomPadding * col)).ceil()
 						)
 						.size(cellSize)
-						.clickable {
-						
-						}
+						.clickable(
+							enabled = cellRow.canEdit,
+							onClick = {
+								onCellClicked(cellRow)
+							}
+						)
 //						.background(Color.Red)
 				) {
-					if (cellRow.id != -1) {
+					if (cellRow.n != -1) {
 						Text(
-							text = if (cellRow.id != 0) cellRow.id.toString() else ""
+							text = if (cellRow.n != 0) cellRow.n.toString() else ""
 						)
 					} else {
 						val sortedSubCells = remember(cellRow.subCells) {
-							cellRow.subCells.sortedBy { it.id }
+							cellRow.subCells.sortedBy { it.n }
 						}
 						
 						FlowRow(
@@ -105,7 +109,7 @@ fun SmallBoard(
 						) {
 							sortedSubCells.forEach { cell ->
 								Text(
-									text = cell.id.toString(),
+									text = cell.n.toString(),
 									style = MaterialTheme.typography.labelSmall.copy(
 										fontWeight = FontWeight.Light,
 										fontSize = 8.sp

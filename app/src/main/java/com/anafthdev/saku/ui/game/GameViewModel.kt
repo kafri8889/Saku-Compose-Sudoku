@@ -44,13 +44,11 @@ class GameViewModel @Inject constructor(
 	val board: StateFlow<List<Cell>> = _board
 	
 	init {
-		gameEngine.setListener(object : GameEngine.EngineListener {
-			override fun onInitialized(board: List<Cell>) {
-				viewModelScope.launch {
-					_board.emit(board)
-				}
+		viewModelScope.launch {
+			gameEngine.currentBoard.collect { mBoard ->
+				_board.emit(mBoard)
 			}
-		})
+		}
 		
 		viewModelScope.launch(Dispatchers.IO) {
 			gameEngine.second.collect { sec ->
@@ -63,7 +61,15 @@ class GameViewModel @Inject constructor(
 	}
 	
 	fun init() {
-		gameEngine.init(GameMode.Easy)
+		viewModelScope.launch {
+			gameEngine.init(GameMode.Easy)
+		}
+	}
+	
+	fun updateBoard(cell: Cell) {
+		viewModelScope.launch {
+			gameEngine.updateBoard(selectedNumber, cell)
+		}
 	}
 	
 	fun updateSelectedGameAction(action: SudokuGameAction) {

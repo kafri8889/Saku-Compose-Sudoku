@@ -19,7 +19,6 @@ import com.anafthdev.saku.data.model.Cell
 import com.anafthdev.saku.extension.ceil
 import com.anafthdev.saku.extension.to2DArray
 import com.anafthdev.saku.theme.SakuTheme
-import timber.log.Timber
 
 @Preview
 @Composable
@@ -40,11 +39,11 @@ fun SudokuBoardPreview() {
 @Composable
 fun SudokuBoard(
 	cells: List<Cell>,
-	modifier: Modifier = Modifier
+	modifier: Modifier = Modifier,
+	onCellClicked: (Cell) -> Unit = {}
 ) {
 	
 	val cells2D = remember(cells) {
-		Timber.i("kontol: $cells")
 		cells.to2DArray(3)
 	}
 	
@@ -91,7 +90,10 @@ fun SudokuBoard(
 							)
 							.size(cellSize)
 					) {
-						SmallBoard(cells = cellRow.subCells)
+						SmallBoard(
+							cells = cellRow.subCells,
+							onCellClicked = onCellClicked
+						)
 					}
 				}
 			}

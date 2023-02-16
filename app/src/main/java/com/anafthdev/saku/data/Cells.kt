@@ -18,39 +18,39 @@ object Cells {
 	
 	val bigCells = listOf(
 		Cell(
-			id = 1,
+			n = 1,
 			subCells = smallCells
 		),
 		Cell(
-			id = 2,
+			n = 2,
 			subCells = smallCells
 		),
 		Cell(
-			id = 3,
+			n = 3,
 			subCells = smallCells
 		),
 		Cell(
-			id = 4,
+			n = 4,
 			subCells = smallCells
 		),
 		Cell(
-			id = 5,
+			n = 5,
 			subCells = smallCells
 		),
 		Cell(
-			id = 6,
+			n = 6,
 			subCells = smallCells
 		),
 		Cell(
-			id = 7,
+			n = 7,
 			subCells = smallCells
 		),
 		Cell(
-			id = 8,
+			n = 8,
 			subCells = smallCells
 		),
 		Cell(
-			id = 9,
+			n = 9,
 			subCells = smallCells
 		),
 	)

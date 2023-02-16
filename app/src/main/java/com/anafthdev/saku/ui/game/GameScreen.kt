@@ -62,6 +62,9 @@ fun GameScreen(
 		item {
 			SudokuBoard(
 				cells = viewModel.board.collectAsStateWithLifecycle().value,
+				onCellClicked = { cell ->
+					viewModel.updateBoard(cell)
+				},
 				modifier = Modifier
 					.fillMaxWidth()
 					.aspectRatio(1f / 1f)
