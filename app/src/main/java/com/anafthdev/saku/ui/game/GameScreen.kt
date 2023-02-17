@@ -18,9 +18,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.anafthdev.saku.component.ObserveLifecycle
+import com.anafthdev.saku.data.Cells
 import com.anafthdev.saku.data.GameMode
 import com.anafthdev.saku.extension.hourMinuteFormat
 import com.anafthdev.saku.uicomponent.AnimatedTextByChar
@@ -61,14 +61,20 @@ fun GameScreen(
 		
 		item {
 			SudokuBoard(
-				cells = viewModel.board.collectAsStateWithLifecycle().value,
-				onCellClicked = { cell ->
-					viewModel.updateBoard(cell)
-				},
+				cells = Cells.smallCells,
 				modifier = Modifier
 					.fillMaxWidth()
 					.aspectRatio(1f / 1f)
 			)
+//			SudokuBoard(
+//				cells = viewModel.board.collectAsStateWithLifecycle().value,
+//				onCellClicked = { cell ->
+//					viewModel.updateBoard(cell)
+//				},
+//				modifier = Modifier
+//					.fillMaxWidth()
+//					.aspectRatio(1f / 1f)
+//			)
 		}
 		
 		item {

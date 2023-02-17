@@ -1,151 +1,265 @@
+@file:JvmName("SudokuBoardKt")
+
 package com.anafthdev.saku.uicomponent
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
-import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.itemsIndexed
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.IntOffset
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.anafthdev.saku.data.Cells
+import androidx.compose.ui.unit.sp
+import androidx.compose.ui.zIndex
 import com.anafthdev.saku.data.model.Cell
-import com.anafthdev.saku.extension.ceil
-import com.anafthdev.saku.extension.to2DArray
-import com.anafthdev.saku.theme.SakuTheme
 
-@Preview
-@Composable
-fun SudokuBoardPreview() {
-	
-	SakuTheme {
-		SudokuBoard(
-			cells = Cells.bigCells,
-			modifier = Modifier
-				.size(512.dp)
-		)
-	}
-}
-
-/**
- * Big cells -> Small cells -> Extra small cells (pencil mode)
- */
 @Composable
 fun SudokuBoard(
 	cells: List<Cell>,
 	modifier: Modifier = Modifier,
-	onCellClicked: (Cell) -> Unit = {}
+	shape: Shape = RoundedCornerShape(5)
 ) {
-	
-	val cells2D = remember(cells) {
-		cells.to2DArray(3)
-	}
-	
-	Box(
-		modifier = Modifier
+
+	BoxWithConstraints(
+		modifier = modifier
+			.clip(shape)
 			.border(
-				width = 2.dp,
-				color = MaterialTheme.colorScheme.onBackground,
-				shape = MaterialTheme.shapes.small
+				width = 1.dp,
+				color = Color.Black,
+				shape = shape
 			)
 	) {
-		BoxWithConstraints(
-			modifier = modifier
-				.padding(2.dp)
-				.clip(MaterialTheme.shapes.small)
-		) {
-			val dividerWidth = 2.dp
-			
-			val cellSize = remember(maxWidth, dividerWidth) {
-				(maxWidth / 3) - dividerWidth / 1.5f  // divided by 1.5 to fill the remaining space of the padding
-			}
-			
-			for ((col, cellsCol) in cells2D.withIndex()) {
-				for ((row, cellRow) in cellsCol.withIndex()) {
-					val endPadding = remember {
-						when {
-							row != 0 -> dividerWidth
-							else -> 0.dp
-						}
-					}
-					
-					val bottomPadding = remember {
-						when {
-							col != 0 -> dividerWidth
-							else -> 0.dp
-						}
-					}
-					
-					Box(
+		
+		val gridCellSize = remember(maxWidth) {
+			maxWidth / 3
+		}
+		
+		val cellSize = remember(gridCellSize) {
+			gridCellSize / 3.2f
+		}
+		
+		Column {
+			for (i in 0 until 3) {
+				Row {
+					LazyVerticalGrid(
+						columns = GridCells.Fixed(3),
+						userScrollEnabled = false,
+						verticalArrangement = Arrangement.Center,
 						modifier = Modifier
-							.offset(
-								x = ((cellSize * row) + (endPadding * row)).ceil(),
-								y = ((cellSize * col) + (bottomPadding * col)).ceil()
+							.size(gridCellSize)
+							.border(
+								width = 1.dp,
+								color = Color.Black
 							)
-							.size(cellSize)
 					) {
-						SmallBoard(
-							cells = cellRow.subCells,
-							onCellClicked = onCellClicked
-						)
+						itemsIndexed(cells) { i, cell ->
+							CellBox(
+								cell = cell,
+								index = i,
+								onClick = {
+								
+								},
+								modifier = Modifier
+									.size(cellSize)
+									.aspectRatio(1f / 1f)
+							)
+						}
+					}
+					
+					LazyVerticalGrid(
+						columns = GridCells.Fixed(3),
+						userScrollEnabled = false,
+						verticalArrangement = Arrangement.Center,
+						modifier = Modifier
+							.size(gridCellSize)
+							.border(
+								width = 1.dp,
+								color = Color.Black
+							)
+					) {
+						itemsIndexed(cells) { i, cell ->
+							CellBox(
+								cell = cell,
+								index = i,
+								onClick = {
+								
+								},
+								modifier = Modifier
+									.size(cellSize)
+									.aspectRatio(1f / 1f)
+							)
+						}
+					}
+					
+					LazyVerticalGrid(
+						columns = GridCells.Fixed(3),
+						userScrollEnabled = false,
+						verticalArrangement = Arrangement.Center,
+						modifier = Modifier
+							.size(gridCellSize)
+							.border(
+								width = 1.dp,
+								color = Color.Black
+							)
+					) {
+						itemsIndexed(cells) { i, cell ->
+							CellBox(
+								cell = cell,
+								index = i,
+								onClick = {
+								
+								},
+								modifier = Modifier
+									.size(cellSize)
+									.aspectRatio(1f / 1f)
+							)
+						}
 					}
 				}
-			}
-			
-			// Divider
-			for (i in 0 until 2) {
-				val padding = remember {
-					when {
-						i != 0 -> dividerWidth
-						else -> 0.dp
-					}
-				}
-				
-				SudokuBoardDivider(
-					color = MaterialTheme.colorScheme.onBackground,
-					maxHeight = maxHeight,
-					thickness = dividerWidth,
-					offsetHorz = {
-						IntOffset(
-							x = 0.dp
-								.toPx()
-								.toInt(),
-							y = (cellSize * (i + 1) + padding)
-								.toPx()
-								.ceil()
-								.toInt()
-						)
-					},
-					offsetVert = {
-						IntOffset(
-							x = (cellSize * (i + 1) + padding)
-								.toPx()
-								.ceil()
-								.toInt(),
-							y = 0.dp
-								.toPx()
-								.toInt()
-						)
-					}
-				)
 			}
 		}
 	}
 }
 
-//class SudokuBoardState() {
-//
-//}
-//
-//@Composable
-//fun rememberSudokuBoardState(): SudokuBoardState {
-//	return remember {
-//		SudokuBoardState()
-//	}
-//}
+@OptIn(ExperimentalLayoutApi::class)
+@Composable
+private fun CellBox(
+	cell: Cell,
+	index: Int,
+	modifier: Modifier = Modifier,
+	onClick: () -> Unit
+) {
+	
+	Box(modifier = modifier) {
+		if (index == 1 || index == 4 || index == 7) {
+			Box(
+				modifier = Modifier
+					.width(1.dp)
+					.fillMaxHeight(0.8f)
+					.background(
+						color = MaterialTheme.colorScheme.outline,
+						shape = CircleShape
+					)
+					.align(Alignment.CenterStart)
+					.zIndex(2f)
+			)
+		}
+		
+		if (index == 3 || index == 4 || index == 5) {
+			Box(
+				modifier = Modifier
+					.height(1.dp)
+					.fillMaxWidth(0.8f)
+					.background(
+						color = MaterialTheme.colorScheme.outline,
+						shape = CircleShape
+					)
+					.align(Alignment.TopCenter)
+					.zIndex(2f)
+			)
+		}
+		
+		Box(
+			contentAlignment = Alignment.Center,
+			modifier = Modifier
+				.padding(
+					bottom = if (index in 0..2) 1.dp else 0.dp,
+					top = if (index in 6..8) 1.dp else 0.dp
+				)
+				.fillMaxSize()
+				.clickable(
+					enabled = cell.canEdit,
+					onClick = onClick
+				)
+				.padding(3.dp)
+				.background(
+					color = if (!cell.canEdit) MaterialTheme.colorScheme.tertiaryContainer
+					else Color.Transparent,
+					shape = CircleShape
+				)
+		) {
+			if (cell.n != -1) {
+				Text(
+					text = if (cell.n != 0) cell.n.toString() else ""
+				)
+			} else {
+				val sortedSubCells = remember(cell.subCells) {
+					cell.subCells.sortedBy { it.n }
+				}
+				
+				FlowRow(
+					maxItemsInEachRow = 3,
+					verticalAlignment = Alignment.CenterVertically,
+					horizontalArrangement = Arrangement.SpaceEvenly,
+					modifier = Modifier
+						.fillMaxSize()
+				) {
+					sortedSubCells.forEach { cell ->
+						Text(
+							text = cell.n.toString(),
+							style = MaterialTheme.typography.labelSmall.copy(
+								fontWeight = FontWeight.Light,
+								fontSize = 8.sp
+							)
+						)
+					}
+				}
+			}
+		}
+		
+		if (index == 3 || index == 4 || index == 5) {
+			Box(
+				modifier = Modifier
+					.height(1.dp)
+					.fillMaxWidth(0.8f)
+					.background(
+						color = MaterialTheme.colorScheme.outline,
+						shape = CircleShape
+					)
+					.align(Alignment.BottomCenter)
+					.zIndex(2f)
+			)
+		}
+		
+		if (index == 1 || index == 4 || index == 7) {
+			Box(
+				modifier = Modifier
+					.width(1.dp)
+					.fillMaxHeight(0.8f)
+					.background(
+						color = MaterialTheme.colorScheme.outline,
+						shape = CircleShape
+					)
+					.align(Alignment.CenterEnd)
+					.zIndex(2f)
+			)
+		}
+	}
+}
