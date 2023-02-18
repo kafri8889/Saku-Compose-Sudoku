@@ -20,7 +20,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.anafthdev.saku.component.ObserveLifecycle
-import com.anafthdev.saku.data.Cells
 import com.anafthdev.saku.data.GameMode
 import com.anafthdev.saku.extension.hourMinuteFormat
 import com.anafthdev.saku.uicomponent.AnimatedTextByChar
@@ -61,7 +60,8 @@ fun GameScreen(
 		
 		item {
 			SudokuBoard(
-				cells = Cells.smallCells,
+				cells = viewModel.board,
+				onCellClicked = viewModel::updateBoard,
 				modifier = Modifier
 					.fillMaxWidth()
 					.aspectRatio(1f / 1f)

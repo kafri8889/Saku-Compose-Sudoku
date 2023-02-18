@@ -44,7 +44,8 @@ import com.anafthdev.saku.data.model.Cell
 fun SudokuBoard(
 	cells: List<Cell>,
 	modifier: Modifier = Modifier,
-	shape: Shape = RoundedCornerShape(5)
+	shape: Shape = RoundedCornerShape(5),
+	onCellClicked: (Cell) -> Unit
 ) {
 
 	BoxWithConstraints(
@@ -79,12 +80,12 @@ fun SudokuBoard(
 								color = Color.Black
 							)
 					) {
-						itemsIndexed(cells) { i, cell ->
+						itemsIndexed(cells.getOrNull(i)?.subCells ?: emptyList()) { i, cell ->
 							CellBox(
 								cell = cell,
 								index = i,
 								onClick = {
-								
+									onCellClicked(cell)
 								},
 								modifier = Modifier
 									.size(cellSize)
@@ -104,12 +105,12 @@ fun SudokuBoard(
 								color = Color.Black
 							)
 					) {
-						itemsIndexed(cells) { i, cell ->
+						itemsIndexed(cells.getOrNull(i + 3)?.subCells ?: emptyList()) { i, cell ->
 							CellBox(
 								cell = cell,
 								index = i,
 								onClick = {
-								
+									onCellClicked(cell)
 								},
 								modifier = Modifier
 									.size(cellSize)
@@ -129,12 +130,12 @@ fun SudokuBoard(
 								color = Color.Black
 							)
 					) {
-						itemsIndexed(cells) { i, cell ->
+						itemsIndexed(cells.getOrNull(i + 6)?.subCells ?: emptyList()) { i, cell ->
 							CellBox(
 								cell = cell,
 								index = i,
 								onClick = {
-								
+									onCellClicked(cell)
 								},
 								modifier = Modifier
 									.size(cellSize)

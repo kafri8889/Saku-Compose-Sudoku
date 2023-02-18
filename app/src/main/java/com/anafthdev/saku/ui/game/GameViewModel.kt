@@ -1,6 +1,7 @@
 package com.anafthdev.saku.ui.game
 
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
@@ -11,8 +12,6 @@ import com.anafthdev.saku.data.model.Cell
 import com.anafthdev.saku.uicomponent.SudokuGameAction
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -21,6 +20,8 @@ import javax.inject.Inject
 class GameViewModel @Inject constructor(
 	private val gameEngine: GameEngine
 ): ViewModel() {
+	
+	private var lastUpdatedCell = Cell.NULL
 	
 	var selectedNumber by mutableStateOf(1)
 		private set
@@ -40,13 +41,26 @@ class GameViewModel @Inject constructor(
 	var selectedGameAction by mutableStateOf(SudokuGameAction.None)
 		private set
 	
-	private val _board = MutableStateFlow(emptyList<Cell>())
-	val board: StateFlow<List<Cell>> = _board
+//	private val _board = MutableStateFlow(emptyList<Cell>())
+//	val board: StateFlow<List<Cell>> = _board
+	
+	val board = mutableStateListOf<Cell>()
 	
 	init {
 		viewModelScope.launch {
 			gameEngine.currentBoard.collect { mBoard ->
-				_board.emit(mBoard)
+//				_board.emit(mBoard)
+				
+				board.apply {
+					if (isEmpty()) {
+						clear()
+						addAll(mBoard)
+					}
+					
+					if (isNotEmpty()) {
+						set(lastUpdatedCell.parentN - 1, mBoard[lastUpdatedCell.parentN - 1])
+					}
+				}
 			}
 		}
 		
@@ -68,7 +82,15 @@ class GameViewModel @Inject constructor(
 	
 	fun updateBoard(cell: Cell) {
 		viewModelScope.launch {
-			gameEngine.updateBoard(selectedNumber, cell)
+			val newN = when {
+				cell.n == 0 -> selectedNumber
+				cell.n != selectedNumber -> selectedNumber
+				cell.n == selectedNumber -> 0
+				else -> 0
+			}
+			
+			lastUpdatedCell = cell
+			gameEngine.updateBoard(cell.copy(n = newN))
 		}
 	}
 	

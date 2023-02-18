@@ -13,6 +13,7 @@ class GameEngine @Inject constructor(
 ) {
 	
 	private val sudoku: Sudoku = Sudoku()
+	private var listener: EngineListener? = null
 	
 	private val _currentBoard = MutableStateFlow(emptyList<Cell>())
 	val currentBoard: StateFlow<List<Cell>> = _currentBoard
@@ -30,9 +31,10 @@ class GameEngine @Inject constructor(
 				subCells.add(
 					Cell(
 						n = num,
+						indexInBoard = row * board.size + col,
+						indexInParent = row,
+						parentN = col + 1,
 						parentId = parentId,
-						col = col,
-						row = row,
 						canEdit = num == 0
 					)
 				)
@@ -58,21 +60,21 @@ class GameEngine @Inject constructor(
 		}
 	}
 	
-	suspend fun updateBoard(num: Int, cell: Cell) {
-		val parentCell = currentBoard.value.find { cell.parentId == it.parentId }
-		val parentCellIndex = currentBoard.value.indexOf(parentCell)
+	suspend fun updateBoard(cell: Cell) {
+		val parentCell = currentBoard.value[cell.parentN - 1]
+		val parentCellIndex = cell.parentN - 1
 		val cellIndex = parentCell?.subCells?.indexOfFirst { cell.id == it.id }
 		
 		if (cellIndex != null) {
-			_currentBoard.emit(
-				currentBoard.value.toMutableList().apply {
-					val newSubCells = get(parentCellIndex).subCells.toMutableList().apply {
-						set(cellIndex, cell.copy(n = num))
-					}
-					
-					set(parentCellIndex, parentCell.copy(subCells = newSubCells))
+			val newBoard = currentBoard.value.toMutableList().apply {
+				val newSubCells = get(parentCellIndex).subCells.toMutableList().apply {
+					set(cellIndex, cell)
 				}
-			)
+				
+				set(parentCellIndex, parentCell.copy(subCells = newSubCells))
+			}
+			
+			_currentBoard.emit(newBoard)
 		}
 	}
 	
@@ -82,6 +84,14 @@ class GameEngine @Inject constructor(
 	
 	fun resume() {
 		countUpTimer.start()
+	}
+	
+	fun setListener(l: EngineListener) {
+		listener = l
+	}
+	
+	interface EngineListener {
+	
 	}
 	
 }
