@@ -246,7 +246,7 @@ private fun CellBox(
 					) {
 						sortedSubCells.forEach { cell ->
 							Text(
-								text = n.toString(),
+								text = cell.n.toString(),
 								style = MaterialTheme.typography.labelSmall.copy(
 									fontWeight = FontWeight.Light,
 									fontSize = 8.sp

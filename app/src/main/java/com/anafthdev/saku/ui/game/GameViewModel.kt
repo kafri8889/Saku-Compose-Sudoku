@@ -82,15 +82,8 @@ class GameViewModel @Inject constructor(
 	
 	fun updateBoard(cell: Cell) {
 		viewModelScope.launch {
-			val newN = when {
-				cell.n == 0 -> selectedNumber
-				cell.n != selectedNumber -> selectedNumber
-				cell.n == selectedNumber -> 0
-				else -> 0
-			}
-			
 			lastUpdatedCell = cell
-			gameEngine.updateBoard(cell.copy(n = newN))
+			gameEngine.updateBoard(cell, selectedNumber, selectedGameAction)
 		}
 	}
 	

@@ -3,6 +3,7 @@ package com.anafthdev.saku.common
 import com.anafthdev.saku.data.GameMode
 import com.anafthdev.saku.data.model.Cell
 import com.anafthdev.saku.extension.missingDigits
+import com.anafthdev.saku.uicomponent.SudokuGameAction
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import javax.inject.Inject
@@ -60,15 +61,53 @@ class GameEngine @Inject constructor(
 		}
 	}
 	
-	suspend fun updateBoard(cell: Cell) {
+	suspend fun updateBoard(cell: Cell, num: Int, action: SudokuGameAction) {
 		val parentCell = currentBoard.value[cell.parentN - 1]
 		val parentCellIndex = cell.parentN - 1
 		val cellIndex = parentCell?.subCells?.indexOfFirst { cell.id == it.id }
 		
 		if (cellIndex != null) {
+			var updatedCell = cell
+			
+			when (action) {
+				SudokuGameAction.Pencil -> {
+					if (cell.n != -1) {
+						updatedCell = updatedCell.copy(n = -1)
+					}
+					
+					updatedCell = updatedCell.copy(
+						subCells = updatedCell.subCells.toMutableList().apply {
+							val subCell = find { it.n == num }
+							
+							if (subCell != null) {
+								removeIf { it.n == num }
+							} else {
+								add(
+									Cell(n = num)
+								)
+							}
+						}
+					)
+				}
+				SudokuGameAction.Eraser -> {
+					updatedCell = updatedCell.copy(n = 0)
+				}
+				else -> {
+					updatedCell = updatedCell.copy(
+						n = when {
+							cell.n == 0 -> num
+							cell.n != num -> num
+							cell.n == num -> 0
+							else -> 0
+						},
+						subCells = emptyList()
+					)
+				}
+			}
+			
 			val newBoard = currentBoard.value.toMutableList().apply {
 				val newSubCells = get(parentCellIndex).subCells.toMutableList().apply {
-					set(cellIndex, cell)
+					set(cellIndex, updatedCell)
 				}
 				
 				set(parentCellIndex, parentCell.copy(subCells = newSubCells))
