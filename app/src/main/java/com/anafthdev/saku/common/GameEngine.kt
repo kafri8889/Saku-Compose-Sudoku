@@ -90,7 +90,10 @@ class GameEngine @Inject constructor(
 					)
 				}
 				SudokuGameAction.Eraser -> {
-					updatedCell = updatedCell.copy(n = 0)
+					updatedCell = updatedCell.copy(
+						n = 0,
+						subCells = emptyList()
+					)
 				}
 				else -> {
 					updatedCell = updatedCell.copy(
