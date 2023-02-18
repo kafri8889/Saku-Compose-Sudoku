@@ -2,6 +2,14 @@
 
 package com.anafthdev.saku.uicomponent
 
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
+import androidx.compose.animation.with
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -149,7 +157,7 @@ fun SudokuBoard(
 	}
 }
 
-@OptIn(ExperimentalLayoutApi::class)
+@OptIn(ExperimentalLayoutApi::class, ExperimentalAnimationApi::class)
 @Composable
 private fun CellBox(
 	cell: Cell,
@@ -206,30 +214,45 @@ private fun CellBox(
 					shape = CircleShape
 				)
 		) {
-			if (cell.n != -1) {
-				Text(
-					text = if (cell.n != 0) cell.n.toString() else ""
-				)
-			} else {
-				val sortedSubCells = remember(cell.subCells) {
-					cell.subCells.sortedBy { it.n }
+			AnimatedContent(
+				targetState = cell.n,
+				transitionSpec = {
+					scaleIn(
+						animationSpec = tween(250)
+					) + fadeIn(
+						animationSpec = tween(150)
+					) with scaleOut(
+						animationSpec = tween(300)
+					) + fadeOut(
+						animationSpec = tween(200)
+					)
 				}
-				
-				FlowRow(
-					maxItemsInEachRow = 3,
-					verticalAlignment = Alignment.CenterVertically,
-					horizontalArrangement = Arrangement.SpaceEvenly,
-					modifier = Modifier
-						.fillMaxSize()
-				) {
-					sortedSubCells.forEach { cell ->
-						Text(
-							text = cell.n.toString(),
-							style = MaterialTheme.typography.labelSmall.copy(
-								fontWeight = FontWeight.Light,
-								fontSize = 8.sp
+			) { n ->
+				if (n != -1) {
+					Text(
+						text = if (n != 0) n.toString() else ""
+					)
+				} else {
+					val sortedSubCells = remember(cell.subCells) {
+						cell.subCells.sortedBy { it.n }
+					}
+					
+					FlowRow(
+						maxItemsInEachRow = 3,
+						verticalAlignment = Alignment.CenterVertically,
+						horizontalArrangement = Arrangement.SpaceEvenly,
+						modifier = Modifier
+							.fillMaxSize()
+					) {
+						sortedSubCells.forEach { cell ->
+							Text(
+								text = n.toString(),
+								style = MaterialTheme.typography.labelSmall.copy(
+									fontWeight = FontWeight.Light,
+									fontSize = 8.sp
+								)
 							)
-						)
+						}
 					}
 				}
 			}
