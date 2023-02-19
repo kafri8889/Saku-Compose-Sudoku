@@ -4,8 +4,12 @@ import com.anafthdev.saku.data.GameMode
 import com.anafthdev.saku.data.model.Cell
 import com.anafthdev.saku.extension.missingDigits
 import com.anafthdev.saku.uicomponent.SudokuGameAction
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.channels.BufferOverflow
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.random.Random
 
@@ -13,13 +17,33 @@ class GameEngine @Inject constructor(
 	private val countUpTimer: CountUpTimer
 ) {
 	
+	private val unre: Unre<List<Cell>> = Unre()
 	private val sudoku: Sudoku = Sudoku()
 	private var listener: EngineListener? = null
 	
-	private val _currentBoard = MutableStateFlow(emptyList<Cell>())
-	val currentBoard: StateFlow<List<Cell>> = _currentBoard
+	private val _currentBoard = MutableSharedFlow<List<Cell>>(
+		replay = 1,
+		onBufferOverflow = BufferOverflow.DROP_OLDEST
+	)
+	val currentBoard: SharedFlow<List<Cell>> = _currentBoard
 	
 	val second = countUpTimer.second
+	
+	init {
+		unre.setListener(object : Unre.UnreListener<List<Cell>> {
+			override fun onUndo(data: List<Cell>) {
+				CoroutineScope(Dispatchers.Main).launch {
+					_currentBoard.emit(data)
+				}
+			}
+			
+			override fun onRedo(data: List<Cell>) {
+				CoroutineScope(Dispatchers.Main).launch {
+					_currentBoard.emit(data)
+				}
+			}
+		})
+	}
 	
 	private fun toCellBoard(board: Array<IntArray>): List<Cell> {
 		val mBoard = ArrayList<Cell>()
@@ -57,12 +81,16 @@ class GameEngine @Inject constructor(
 		sudoku.init(9, gameMode.missingDigits)
 		
 		sudoku.printBoard().let {
-			_currentBoard.emit(toCellBoard(it))
+			val cellBoards = toCellBoard(it)
+			
+			_currentBoard.emit(cellBoards)
+			unre.swap(cellBoards)
 		}
 	}
 	
 	suspend fun updateBoard(cell: Cell, num: Int, action: SudokuGameAction) {
-		val parentCell = currentBoard.value[cell.parentN - 1]
+		val boardValue = currentBoard.replayCache[currentBoard.replayCache.lastIndex]
+		val parentCell = boardValue.getOrNull(cell.parentN - 1)
 		val parentCellIndex = cell.parentN - 1
 		val cellIndex = parentCell?.subCells?.indexOfFirst { cell.id == it.id }
 		
@@ -89,12 +117,8 @@ class GameEngine @Inject constructor(
 						}
 					)
 				}
-				SudokuGameAction.Eraser -> {
-					updatedCell = updatedCell.copy(
-						n = 0,
-						subCells = emptyList()
-					)
-				}
+				SudokuGameAction.Undo -> {}
+				SudokuGameAction.Redo -> {}
 				else -> {
 					updatedCell = updatedCell.copy(
 						n = when {
@@ -108,16 +132,27 @@ class GameEngine @Inject constructor(
 				}
 			}
 			
-			val newBoard = currentBoard.value.toMutableList().apply {
+			val newBoard = boardValue.toMutableList().apply {
 				val newSubCells = get(parentCellIndex).subCells.toMutableList().apply {
 					set(cellIndex, updatedCell)
 				}
 				
-				set(parentCellIndex, parentCell.copy(subCells = newSubCells))
+				val newParentCell = parentCell.copy(subCells = newSubCells)
+				
+				set(parentCellIndex, newParentCell)
 			}
 			
-			_currentBoard.emit(newBoard)
+			_currentBoard.emit(newBoard.toList())
+			unre.addStack(newBoard.toList())
 		}
+	}
+	
+	fun undo() {
+		unre.undo()
+	}
+	
+	fun redo() {
+		unre.redo()
 	}
 	
 	fun pause() {

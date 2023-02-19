@@ -41,25 +41,14 @@ class GameViewModel @Inject constructor(
 	var selectedGameAction by mutableStateOf(SudokuGameAction.None)
 		private set
 	
-//	private val _board = MutableStateFlow(emptyList<Cell>())
-//	val board: StateFlow<List<Cell>> = _board
-	
 	val board = mutableStateListOf<Cell>()
 	
 	init {
 		viewModelScope.launch {
 			gameEngine.currentBoard.collect { mBoard ->
-//				_board.emit(mBoard)
-				
 				board.apply {
-					if (isEmpty()) {
-						clear()
-						addAll(mBoard)
-					}
-					
-					if (isNotEmpty()) {
-						set(lastUpdatedCell.parentN - 1, mBoard[lastUpdatedCell.parentN - 1])
-					}
+					clear()
+					addAll(mBoard)
 				}
 			}
 		}
@@ -101,6 +90,18 @@ class GameViewModel @Inject constructor(
 	
 	fun updateMinute(m: Int) {
 		minute = m
+	}
+	
+	fun undo() {
+		viewModelScope.launch {
+			gameEngine.undo()
+		}
+	}
+	
+	fun redo() {
+		viewModelScope.launch {
+			gameEngine.redo()
+		}
 	}
 	
 	fun pause() {

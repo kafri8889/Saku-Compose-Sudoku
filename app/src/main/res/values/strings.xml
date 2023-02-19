@@ -4,4 +4,5 @@
     <string name="validate">Validate</string>
     <string name="pencil">Pencil</string>
     <string name="eraser">Eraser</string>
+    <string name="redo">Redo</string>
 </resources>

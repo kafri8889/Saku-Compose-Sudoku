@@ -81,7 +81,7 @@ enum class SudokuGameAction {
 	Undo,
 	Validate,
 	Pencil,
-	Eraser,
+	Redo,
 	
 	None
 }
@@ -91,18 +91,17 @@ object SudokuGameActionDefaults {
 	val undo = R.drawable.ic_undo to R.string.undo
 	val validate = R.drawable.ic_check to R.string.validate
 	val pencil = R.drawable.ic_edit to R.string.pencil
-	val eraser = R.drawable.ic_eraser to R.string.eraser
+	val redo = R.drawable.ic_redo to R.string.redo
 	
 	val selectableActions = arrayOf(
-		SudokuGameAction.Pencil,
-		SudokuGameAction.Eraser
+		SudokuGameAction.Pencil
 	)
 	
 	val actions = arrayOf(
 		undo,
 		validate,
 		pencil,
-		eraser
+		redo
 	)
 	
 }
