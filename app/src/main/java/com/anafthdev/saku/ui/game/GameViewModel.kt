@@ -46,6 +46,7 @@ class GameViewModel @Inject constructor(
 	init {
 		viewModelScope.launch {
 			gameEngine.currentBoard.collect { mBoard ->
+				println("bor: $mBoard")
 				board.apply {
 					clear()
 					addAll(mBoard)
@@ -101,6 +102,12 @@ class GameViewModel @Inject constructor(
 	fun redo() {
 		viewModelScope.launch {
 			gameEngine.redo()
+		}
+	}
+	
+	fun solve() {
+		viewModelScope.launch {
+			gameEngine.solve()
 		}
 	}
 	

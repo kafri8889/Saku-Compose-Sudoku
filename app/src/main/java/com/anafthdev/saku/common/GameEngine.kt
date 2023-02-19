@@ -21,6 +21,8 @@ class GameEngine @Inject constructor(
 	private val sudoku: Sudoku = Sudoku()
 	private var listener: EngineListener? = null
 	
+	private val solvedBoard: ArrayList<Cell> = arrayListOf()
+	
 	private val _currentBoard = MutableSharedFlow<List<Cell>>(
 		replay = 1,
 		onBufferOverflow = BufferOverflow.DROP_OLDEST
@@ -30,6 +32,15 @@ class GameEngine @Inject constructor(
 	val second = countUpTimer.second
 	
 	init {
+		sudoku.setListener(object : Sudoku.SudokuListener {
+			override fun onSolvedBoardCreated(board: Array<IntArray>) {
+				solvedBoard.apply {
+					clear()
+					addAll(toCellBoard(board))
+				}
+			}
+		})
+		
 		unre.setListener(object : Unre.UnreListener<List<Cell>> {
 			override fun onUndo(data: List<Cell>) {
 				CoroutineScope(Dispatchers.Main).launch {
@@ -153,6 +164,10 @@ class GameEngine @Inject constructor(
 	
 	fun redo() {
 		unre.redo()
+	}
+	
+	suspend fun solve() {
+		_currentBoard.emit(solvedBoard)
 	}
 	
 	fun pause() {

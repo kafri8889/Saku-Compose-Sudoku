@@ -106,7 +106,7 @@ fun GameScreen(
 							when (action) {
 								SudokuGameAction.Undo -> viewModel.undo()
 								SudokuGameAction.Redo -> viewModel.redo()
-								SudokuGameAction.Validate -> {}
+								SudokuGameAction.Validate -> viewModel.solve()
 								else -> {}
 							}
 						}

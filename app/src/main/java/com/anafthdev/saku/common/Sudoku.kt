@@ -5,7 +5,10 @@ import kotlin.math.sqrt
 
 class Sudoku {
 	
+	private var listener: SudokuListener? = null
+	
 	var board: Array<IntArray> = arrayOf()
+	var solvedBoard: Array<IntArray> = arrayOf()
 	
 	/**
 	 * number of columns/rows.
@@ -83,6 +86,10 @@ class Sudoku {
 		
 		// Fill remaining blocks
 		fillRemaining(0, srNumRowOrColumn)
+		
+		solvedBoard = board.clone().also {
+			listener?.onSolvedBoardCreated(it)
+		}
 		
 		// Remove Randomly K digits to make game
 		removeKDigits()
@@ -209,4 +216,13 @@ class Sudoku {
 //		return arrayOf()
 		return board
 	}
+	
+	fun setListener(l: SudokuListener) {
+		listener = l
+	}
+	
+	interface SudokuListener {
+		fun onSolvedBoardCreated(board: Array<IntArray>)
+	}
+	
 }
