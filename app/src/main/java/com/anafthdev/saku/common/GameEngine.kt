@@ -59,25 +59,49 @@ class GameEngine @Inject constructor(
 	private fun toCellBoard(board: Array<IntArray>): List<Cell> {
 		val mBoard = ArrayList<Cell>()
 		
-		board.forEachIndexed { col, ints ->
+		val dCells1 = arrayListOf<List<Int>>()
+		val dCells2 = arrayListOf<List<Int>>()
+		val dCells3 = arrayListOf<List<Int>>()
+		
+		for (i in 0 until 9) {
+			val cellList = board[i].toList()
+			
+			dCells1.add(cellList.subList(0, 3))
+			dCells2.add(cellList.subList(3, 6))
+			dCells3.add(cellList.subList(6, 9))
+		}
+		
+		for (i in 0 until 9) {
 			val parentId = Random.nextInt()
 			val subCells = ArrayList<Cell>()
 			
-			ints.forEachIndexed { row, num ->
+			val (from, to) = when (i) {
+				in 0 until 3 -> 0 to 3
+				in 3 until 6 -> 3 to 6
+				in 6 until 9 -> 6 to 9
+				else -> -1 to -1
+			}
+			
+			val dCellList = when {
+				i % 3 == 0 -> dCells1.subList(from, to)
+				i % 3 == 1 -> dCells2.subList(from, to)
+				i % 3 == 2 -> dCells3.subList(from, to)
+				else -> emptyList()
+			}
+			
+			dCellList.flatten().forEach{ int ->
 				subCells.add(
 					Cell(
-						n = num,
-						indexInBoard = row * board.size + col,
-						indexInParent = row,
-						parentN = col + 1,
+						n = int,
+						parentN = i + 1,
 						parentId = parentId,
-						canEdit = num == 0
+						canEdit = int == 0
 					)
 				)
 			}
 			
 			val cell = Cell(
-				n = col + 1,
+				n = i + 1,
 				parentId = parentId,
 				subCells = subCells
 			)

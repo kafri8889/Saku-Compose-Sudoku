@@ -10,8 +10,6 @@ data class Cell(
 	 * 1 - 9
 	 */
 	val parentN: Int = 1,
-	val indexInBoard: Int = -1,
-	val indexInParent: Int = -1,
 	val id: Int = Random.nextInt(),
 	val parentId: Int = Random.nextInt(),
 	val canEdit: Boolean = false

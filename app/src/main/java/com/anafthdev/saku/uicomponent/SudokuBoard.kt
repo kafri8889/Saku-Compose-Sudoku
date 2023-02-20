@@ -74,9 +74,9 @@ fun SudokuBoard(
 			gridCellSize / 3.2f
 		}
 		
-		Column {
+		Row {
 			for (i in 0 until 3) {
-				Row {
+				Column {
 					LazyVerticalGrid(
 						columns = GridCells.Fixed(3),
 						userScrollEnabled = false,
