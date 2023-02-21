@@ -16,12 +16,14 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.anafthdev.saku.component.ObserveLifecycle
 import com.anafthdev.saku.data.GameMode
 import com.anafthdev.saku.extension.hourMinuteFormat
+import com.anafthdev.saku.extension.toast
 import com.anafthdev.saku.uicomponent.AnimatedTextByChar
 import com.anafthdev.saku.uicomponent.NumberPad
 import com.anafthdev.saku.uicomponent.SudokuBoard
@@ -34,8 +36,16 @@ fun GameScreen(
 	navController: NavController
 ) {
 	
+	val context = LocalContext.current
+	
 	LaunchedEffect(Unit) {
 		viewModel.init()
+	}
+	
+	LaunchedEffect(viewModel.win) {
+		if (viewModel.win) {
+			"Win".toast(context)
+		}
 	}
 	
 	ObserveLifecycle(

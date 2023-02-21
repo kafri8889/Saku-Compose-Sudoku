@@ -8,7 +8,9 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.random.Random
@@ -28,6 +30,9 @@ class GameEngine @Inject constructor(
 		onBufferOverflow = BufferOverflow.DROP_OLDEST
 	)
 	val currentBoard: SharedFlow<List<Cell>> = _currentBoard
+	
+	private val _win = MutableStateFlow(false)
+	val win: StateFlow<Boolean> = _win
 	
 	val second = countUpTimer.second
 	
@@ -179,7 +184,25 @@ class GameEngine @Inject constructor(
 			
 			_currentBoard.emit(newBoard.toList())
 			unre.addStack(newBoard.toList())
+			
+			println("PCI: $parentCellIndex, CI: $cellIndex")
+			
+			updateSudokuBoard(parentCellIndex, cellIndex, updatedCell.n)
+			
+			_win.emit(checkWin())
 		}
+	}
+	
+	fun updateSudokuBoard(parentIndex: Int, cellIndex: Int, num: Int) {
+		val cells = sudoku.board[parentIndex].apply {
+			set(cellIndex, num)
+		}
+		
+		sudoku.board[parentIndex] = cells
+	}
+	
+	fun checkWin(): Boolean {
+		return sudoku.board.contentDeepEquals(sudoku.solvedBoard)
 	}
 	
 	fun undo() {

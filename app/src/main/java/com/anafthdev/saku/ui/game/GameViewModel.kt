@@ -35,6 +35,9 @@ class GameViewModel @Inject constructor(
 	var isPaused by mutableStateOf(false)
 		private set
 	
+	var win by mutableStateOf(false)
+		private set
+	
 	var gameMode by mutableStateOf(GameMode.Easy)
 		private set
 	
@@ -44,6 +47,14 @@ class GameViewModel @Inject constructor(
 	val board = mutableStateListOf<Cell>()
 	
 	init {
+		viewModelScope.launch {
+			gameEngine.win.collect { mWin ->
+				println("win: $mWin")
+				
+				win = mWin
+			}
+		}
+		
 		viewModelScope.launch {
 			gameEngine.currentBoard.collect { mBoard ->
 				println("bor: $mBoard")

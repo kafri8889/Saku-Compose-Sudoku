@@ -228,6 +228,18 @@ class Sudoku {
 	
 	companion object {
 		val testBoard = arrayOf(
+			intArrayOf(4, 0, 1, 2, 3, 6, 8, 9, 7),
+			intArrayOf(9, 2, 6, 1, 7, 8, 3, 4, 5),
+			intArrayOf(3, 7, 8, 5, 4, 9, 1, 2, 6),
+			intArrayOf(1, 6, 7, 4, 5, 3, 9, 8, 2),
+			intArrayOf(2, 3, 9, 8, 1, 7, 6, 5, 4),
+			intArrayOf(8, 4, 5, 6, 9, 2, 7, 1, 3),
+			intArrayOf(6, 8, 3, 9, 2, 4, 5, 7, 1),
+			intArrayOf(5, 9, 2, 7, 6, 1, 4, 3, 8),
+			intArrayOf(7, 1, 4, 3, 8, 5, 2, 6, 9),
+		)
+		
+		val testBoard2 = arrayOf(
 			intArrayOf(4, 5, 1, 2, 3, 6, 8, 9, 7),
 			intArrayOf(9, 2, 6, 1, 7, 8, 3, 4, 5),
 			intArrayOf(3, 7, 8, 5, 4, 9, 1, 2, 6),
