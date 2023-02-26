@@ -71,20 +71,12 @@ fun GameScreen(
 		item {
 			SudokuBoard(
 				cells = viewModel.board,
+				selectedCell = viewModel.selectedCell,
 				onCellClicked = viewModel::updateBoard,
 				modifier = Modifier
 					.fillMaxWidth()
 					.aspectRatio(1f / 1f)
 			)
-//			SudokuBoard(
-//				cells = viewModel.board.collectAsStateWithLifecycle().value,
-//				onCellClicked = { cell ->
-//					viewModel.updateBoard(cell)
-//				},
-//				modifier = Modifier
-//					.fillMaxWidth()
-//					.aspectRatio(1f / 1f)
-//			)
 		}
 		
 		item {

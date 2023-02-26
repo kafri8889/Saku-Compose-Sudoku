@@ -4,6 +4,7 @@ package com.anafthdev.saku.uicomponent
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -33,13 +34,16 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.text.font.FontWeight
@@ -51,6 +55,7 @@ import com.anafthdev.saku.data.model.Cell
 @Composable
 fun SudokuBoard(
 	cells: List<Cell>,
+	selectedCell: Cell,
 	modifier: Modifier = Modifier,
 	shape: Shape = RoundedCornerShape(5),
 	onCellClicked: (Cell) -> Unit
@@ -92,6 +97,7 @@ fun SudokuBoard(
 							CellBox(
 								cell = cell,
 								index = i,
+								selected = selectedCell.n == cell.n,
 								onClick = {
 									onCellClicked(cell)
 								},
@@ -117,6 +123,7 @@ fun SudokuBoard(
 							CellBox(
 								cell = cell,
 								index = i,
+								selected = selectedCell.n == cell.n,
 								onClick = {
 									onCellClicked(cell)
 								},
@@ -142,6 +149,7 @@ fun SudokuBoard(
 							CellBox(
 								cell = cell,
 								index = i,
+								selected = selectedCell.n == cell.n,
 								onClick = {
 									onCellClicked(cell)
 								},
@@ -162,9 +170,19 @@ fun SudokuBoard(
 private fun CellBox(
 	cell: Cell,
 	index: Int,
+	selected: Boolean,
 	modifier: Modifier = Modifier,
 	onClick: () -> Unit
 ) {
+	
+	val cellBackground by animateColorAsState(
+		animationSpec = tween(300),
+		targetValue = if (selected) MaterialTheme.colorScheme.primary
+		else {
+			if (cell.missingNum) MaterialTheme.colorScheme.background
+			else MaterialTheme.colorScheme.surfaceVariant
+		}
+	)
 	
 	Box(modifier = modifier) {
 		if (index == 1 || index == 4 || index == 7) {
@@ -203,16 +221,13 @@ private fun CellBox(
 					top = if (index in 6..8) 1.dp else 0.dp
 				)
 				.fillMaxSize()
-				.clickable(
-					enabled = cell.canEdit,
-					onClick = onClick
-				)
+				.clickable(onClick = onClick)
 				.padding(3.dp)
-				.background(
-					color = if (!cell.canEdit) MaterialTheme.colorScheme.tertiaryContainer
-					else Color.Transparent,
-					shape = CircleShape
-				)
+				.drawBehind {
+					drawCircle(
+						color = cellBackground
+					)
+				}
 		) {
 			AnimatedContent(
 				targetState = cell.n,
@@ -230,7 +245,10 @@ private fun CellBox(
 			) { n ->
 				if (n != -1) {
 					Text(
-						text = if (n != 0) n.toString() else ""
+						text = if (n != 0) n.toString() else "",
+						style = LocalTextStyle.current.copy(
+							color = if (selected) Color.White else Color.Black
+						)
 					)
 				} else {
 					val sortedSubCells = remember(cell.subCells) {

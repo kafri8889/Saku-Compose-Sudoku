@@ -12,7 +12,7 @@ data class Cell(
 	val parentN: Int = 1,
 	val id: Int = Random.nextInt(),
 	val parentId: Int = Random.nextInt(),
-	val canEdit: Boolean = false
+	val missingNum: Boolean = false
 ) {
 	companion object {
 		val NULL = Cell(

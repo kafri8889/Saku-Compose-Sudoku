@@ -41,6 +41,9 @@ class GameViewModel @Inject constructor(
 	var gameMode by mutableStateOf(GameMode.Easy)
 		private set
 	
+	var selectedCell by mutableStateOf(Cell.NULL)
+		private set
+	
 	var selectedGameAction by mutableStateOf(SudokuGameAction.None)
 		private set
 	
@@ -83,8 +86,14 @@ class GameViewModel @Inject constructor(
 	
 	fun updateBoard(cell: Cell) {
 		viewModelScope.launch {
-			lastUpdatedCell = cell
-			gameEngine.updateBoard(cell, selectedNumber, selectedGameAction)
+			if (cell.missingNum) {
+				lastUpdatedCell = cell
+				gameEngine.updateBoard(cell, selectedNumber, selectedGameAction)
+			}
+			
+			selectedCell = if (!cell.missingNum) {
+				if (selectedCell.n == cell.n) Cell.NULL else cell
+			} else Cell.NULL
 		}
 	}
 	

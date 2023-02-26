@@ -100,7 +100,7 @@ class GameEngine @Inject constructor(
 						n = int,
 						parentN = i + 1,
 						parentId = parentId,
-						canEdit = int == 0
+						missingNum = int == 0
 					)
 				)
 			}
