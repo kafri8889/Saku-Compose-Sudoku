@@ -104,6 +104,17 @@ fun DashboardScreen(
 			
 			IconButton(
 				onClick = {
+					navController.navigate(SakuDestination.Setting.Home.route)
+				}
+			) {
+				Icon(
+					painter = painterResource(id = R.drawable.ic_setting),
+					contentDescription = null
+				)
+			}
+			
+			IconButton(
+				onClick = {
 					context.startActivity(
 						Intent(Intent.ACTION_VIEW).apply {
 							flags = Intent.FLAG_ACTIVITY_NEW_TASK

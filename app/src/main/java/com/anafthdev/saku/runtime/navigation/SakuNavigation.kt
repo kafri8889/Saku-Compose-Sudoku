@@ -36,6 +36,8 @@ fun SakuNavigation() {
 		ScoreAnimatedNavHost(navController)
 		
 		GameAnimatedNavHost(navController)
+		
+		SettingAnimatedNavHost(navController)
 	}
 	
 }

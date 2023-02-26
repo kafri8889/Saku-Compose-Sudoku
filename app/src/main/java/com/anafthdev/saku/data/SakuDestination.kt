@@ -15,6 +15,11 @@ sealed class SakuDestination(val route: String) {
 		object Home: SakuDestination("score/home")
 	}
 	
+	class Setting {
+		object Root: SakuDestination("option/root")
+		object Home: SakuDestination("option/home")
+	}
+	
 	class Game {
 		object Root: SakuDestination("game/root")
 		object Home: SakuDestination(
