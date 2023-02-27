@@ -41,7 +41,7 @@ class GameViewModel @Inject constructor(
 	var gameMode by mutableStateOf(GameMode.Easy)
 		private set
 	
-	var selectedCell by mutableStateOf(Cell.NULL)
+	var selectedCell by mutableStateOf(Cell(1))
 		private set
 	
 	var selectedGameAction by mutableStateOf(SudokuGameAction.None)
@@ -110,6 +110,8 @@ class GameViewModel @Inject constructor(
 	
 	fun updateSelectedNumber(n: Int) {
 		selectedNumber = n
+		
+		selectedCell = Cell(selectedNumber)
 	}
 	
 	fun updateSecond(s: Int) {
