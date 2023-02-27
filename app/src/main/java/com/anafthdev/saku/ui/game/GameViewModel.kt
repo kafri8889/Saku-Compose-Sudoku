@@ -60,11 +60,18 @@ class GameViewModel @Inject constructor(
 		
 		viewModelScope.launch {
 			gameEngine.currentBoard.collect { mBoard ->
-				println("bor: $mBoard")
+				gameEngine.getRemainingNumber(mBoard)
+				
 				board.apply {
 					clear()
 					addAll(mBoard)
 				}
+			}
+		}
+		
+		viewModelScope.launch {
+			gameEngine.remainingNumbers.collect { remainingNumbers ->
+				// TODO: RemainingNumber
 			}
 		}
 		

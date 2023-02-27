@@ -2,7 +2,9 @@ package com.anafthdev.saku.common
 
 import com.anafthdev.saku.data.GameMode
 import com.anafthdev.saku.data.model.Cell
+import com.anafthdev.saku.data.model.RemainingNumber
 import com.anafthdev.saku.extension.missingDigits
+import com.anafthdev.saku.extension.setOrAdd
 import com.anafthdev.saku.uicomponent.SudokuGameAction
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -30,6 +32,12 @@ class GameEngine @Inject constructor(
 		onBufferOverflow = BufferOverflow.DROP_OLDEST
 	)
 	val currentBoard: SharedFlow<List<Cell>> = _currentBoard
+	
+	private val _remainingNumbers = MutableSharedFlow<List<RemainingNumber>>(
+		replay = 1,
+		onBufferOverflow = BufferOverflow.DROP_OLDEST
+	)
+	val remainingNumbers: SharedFlow<List<RemainingNumber>> = _remainingNumbers
 	
 	private val _win = MutableStateFlow(false)
 	val win: StateFlow<Boolean> = _win
@@ -123,6 +131,8 @@ class GameEngine @Inject constructor(
 		sudoku.printBoard().let {
 			val cellBoards = toCellBoard(it)
 			
+			getRemainingNumber(cellBoards)
+			
 			_currentBoard.emit(cellBoards)
 			unre.swap(cellBoards)
 		}
@@ -191,6 +201,35 @@ class GameEngine @Inject constructor(
 			
 			_win.emit(checkWin())
 		}
+	}
+	
+	suspend fun getRemainingNumber(board: List<Cell>) {
+		val newRemainingNumbers = ArrayList(remainingNumbers.replayCache.getOrElse(remainingNumbers.replayCache.lastIndex) { emptyList() })
+		val numbers = arrayListOf(0, 0, 0, 0, 0, 0, 0, 0, 0)
+		
+		for (i in 0 until 9) {
+			for (j in 1..9) {
+				val count = board[i].subCells.filter { it.n == j }.size
+				
+				numbers[j - 1] += count
+			}
+		}
+		
+		for (j in 1..9) {
+			val rem = newRemainingNumbers.find { it.n == j } ?: RemainingNumber(
+				n = j,
+				remaining = 0
+			)
+			
+			newRemainingNumbers.setOrAdd(
+				index = j - 1,
+				value = rem.copy(
+					remaining = 9 - numbers[j - 1]
+				)
+			)
+		}
+		
+		_remainingNumbers.emit(newRemainingNumbers)
 	}
 	
 	fun updateSudokuBoard(parentIndex: Int, cellIndex: Int, num: Int) {
