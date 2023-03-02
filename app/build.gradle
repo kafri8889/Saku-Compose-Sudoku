@@ -14,7 +14,7 @@ android {
     compileSdk 33
 
     defaultConfig {
-        applicationId "com.anafthdev.remindme"
+        applicationId "com.anafthdev.saku"
         minSdk 24
         targetSdk 33
         versionCode 1
