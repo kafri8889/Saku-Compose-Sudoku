@@ -6,15 +6,17 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -22,11 +24,13 @@ import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.dp
+import com.anafthdev.saku.data.model.RemainingNumber
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun NumberPad(
 	selectedNumber: Int,
+	remainingNumbers: List<RemainingNumber>,
 	modifier: Modifier = Modifier,
 	onNumberSelected: (Int) -> Unit
 ) {
@@ -46,13 +50,18 @@ fun NumberPad(
 				animationSpec = tween(500)
 			)
 			
+			val remainingNumber by rememberUpdatedState(
+				newValue = if (remainingNumbers.isNotEmpty()) {
+					remainingNumbers[i - 1].remaining.coerceAtLeast(0).toString()
+				} else "0"
+			)
+			
 			Box(
 				contentAlignment = Alignment.Center,
 				modifier = Modifier
 					.padding(4.dp)
 					.size(config.smallestScreenWidthDp.dp / 8f)
 					.clip(RoundedCornerShape(25))
-//					.clipToBounds()
 					.drawBehind {
 						drawRect(backgroundColor)
 					}
@@ -63,13 +72,25 @@ fun NumberPad(
 					)
 					.clickable { onNumberSelected(i) }
 			) {
-				AutoResizeText(
-					text = i.toString(),
-					style = LocalTextStyle.current.copy(
-						color = if (selected) MaterialTheme.colorScheme.background
-						else MaterialTheme.colorScheme.onBackground
+				Column(
+					horizontalAlignment = Alignment.CenterHorizontally
+				) {
+					AutoResizeText(
+						text = i.toString(),
+						style = MaterialTheme.typography.bodyMedium.copy(
+							color = if (selected) MaterialTheme.colorScheme.background
+							else MaterialTheme.colorScheme.onBackground
+						)
 					)
-				)
+					
+					Text(
+						text = remainingNumber,
+						style = MaterialTheme.typography.labelSmall.copy(
+							color = if (selected) Color.LightGray
+							else Color.Gray
+						)
+					)
+				}
 			}
 		}
 	}

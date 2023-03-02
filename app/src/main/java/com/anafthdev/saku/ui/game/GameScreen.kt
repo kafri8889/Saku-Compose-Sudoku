@@ -85,6 +85,7 @@ fun GameScreen(
 			) {
 				NumberPad(
 					selectedNumber = viewModel.selectedNumber,
+					remainingNumbers = viewModel.remainingNumbers,
 					onNumberSelected = viewModel::updateSelectedNumber,
 					modifier = Modifier
 						.fillMaxWidth()

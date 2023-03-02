@@ -9,6 +9,7 @@ import androidx.lifecycle.viewModelScope
 import com.anafthdev.saku.common.GameEngine
 import com.anafthdev.saku.data.GameMode
 import com.anafthdev.saku.data.model.Cell
+import com.anafthdev.saku.data.model.RemainingNumber
 import com.anafthdev.saku.uicomponent.SudokuGameAction
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -48,6 +49,7 @@ class GameViewModel @Inject constructor(
 		private set
 	
 	val board = mutableStateListOf<Cell>()
+	val remainingNumbers = mutableStateListOf<RemainingNumber>()
 	
 	init {
 		viewModelScope.launch {
@@ -70,8 +72,11 @@ class GameViewModel @Inject constructor(
 		}
 		
 		viewModelScope.launch {
-			gameEngine.remainingNumbers.collect { remainingNumbers ->
-				// TODO: RemainingNumber
+			gameEngine.remainingNumbers.collect { numbers ->
+				remainingNumbers.apply {
+					clear()
+					addAll(numbers)
+				}
 			}
 		}
 		
