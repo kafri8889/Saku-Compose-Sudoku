@@ -10,6 +10,14 @@ class UserPreferencesRepository @Inject constructor(
 	private val userPreferencesDataStore: DataStore<UserPreferences>
 ) {
 	
+	suspend fun setGameMode(ordinal: Int) {
+		userPreferencesDataStore.updateData { currentPreferences ->
+			currentPreferences.copy(
+				gameMode = ordinal
+			)
+		}
+	}
+	
 	suspend fun setBoardState(json: String) {
 		userPreferencesDataStore.updateData { currentPreferences ->
 			currentPreferences.copy(
@@ -18,10 +26,10 @@ class UserPreferencesRepository @Inject constructor(
 		}
 	}
 	
-	suspend fun setGameMode(ordinal: Int) {
+	suspend fun setSolvedBoardState(json: String) {
 		userPreferencesDataStore.updateData { currentPreferences ->
 			currentPreferences.copy(
-				gameMode = ordinal
+				solvedBoardState = json
 			)
 		}
 	}

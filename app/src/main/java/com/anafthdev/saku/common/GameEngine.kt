@@ -6,6 +6,7 @@ import com.anafthdev.saku.data.model.RemainingNumber
 import com.anafthdev.saku.extension.missingDigits
 import com.anafthdev.saku.extension.setOrAdd
 import com.anafthdev.saku.uicomponent.SudokuGameAction
+import com.google.gson.Gson
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.BufferOverflow
@@ -21,6 +22,7 @@ class GameEngine @Inject constructor(
 	private val countUpTimer: CountUpTimer
 ) {
 	
+	private val gson: Gson = Gson()
 	private val unre: Unre<List<Cell>> = Unre()
 	private val sudoku: Sudoku = Sudoku()
 	private var listener: EngineListener? = null
@@ -125,6 +127,10 @@ class GameEngine @Inject constructor(
 		return mBoard
 	}
 	
+	private fun boardFromJson(json: String): List<Cell> {
+		return if (json.isBlank()) emptyList() else gson.fromJson(json, Array<Cell>::class.java).toList()
+	}
+	
 	suspend fun init(gameMode: GameMode) {
 		sudoku.init(9, gameMode.missingDigits)
 		
@@ -136,6 +142,23 @@ class GameEngine @Inject constructor(
 			_currentBoard.emit(cellBoards)
 			unre.swap(cellBoards)
 		}
+	}
+	
+	suspend fun init(boardJson: String, solvedBoardJson: String) {
+		println("bortstet b: $boardJson")
+		println("bortstet sb: $solvedBoardJson")
+		
+		val parsedBoard = boardFromJson(boardJson)
+		val parsedSolvedBoard = boardFromJson(solvedBoardJson)
+		
+		solvedBoard.apply {
+			clear()
+			addAll(parsedSolvedBoard)
+		}
+		
+		_currentBoard.emit(parsedBoard)
+		
+		getRemainingNumber(parsedBoard)
 	}
 	
 	suspend fun updateBoard(cell: Cell, num: Int, action: SudokuGameAction) {
@@ -195,9 +218,7 @@ class GameEngine @Inject constructor(
 			_currentBoard.emit(newBoard.toList())
 			unre.addStack(newBoard.toList())
 			
-			println("PCI: $parentCellIndex, CI: $cellIndex")
-			
-			updateSudokuBoard(parentCellIndex, cellIndex, updatedCell.n)
+//			updateSudokuBoard(parentCellIndex, cellIndex, updatedCell.n)
 			
 			_win.emit(checkWin())
 		}
@@ -254,6 +275,24 @@ class GameEngine @Inject constructor(
 		}
 		
 		return true
+	}
+	
+	fun getBoardStateInJson(): String {
+		val board = currentBoard.replayCache[currentBoard.replayCache.lastIndex]
+		
+		val boardJson = Gson().toJson(board)
+		
+		println("board json: $boardJson")
+		
+		return boardJson
+	}
+	
+	fun getSolvedBoardStateInJson(): String {
+		val solvedBoardJson = Gson().toJson(solvedBoard)
+		
+		println("solved board json: $solvedBoardJson")
+		
+		return solvedBoardJson
 	}
 	
 	fun undo() {

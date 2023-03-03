@@ -24,17 +24,26 @@ sealed class SakuDestination(val route: String) {
 		object Root: SakuDestination("game/root")
 		object Home: SakuDestination(
 			route = "game/home?" +
-					"game-mode={$ARG_GAME_MODE}"
+					"$ARG_GAME_MODE={$ARG_GAME_MODE}&" +
+					"$ARG_USE_LAST_BOARD={$ARG_USE_LAST_BOARD}"
 		) {
-			fun createRoute(mode: GameMode): String {
+			fun createRoute(
+				mode: Int,
+				useLastBoard: Boolean = false
+			): String {
 				return "game/home?" +
-						"game-mode=${mode.ordinal}"
+						"$ARG_GAME_MODE=$mode&" +
+						"$ARG_USE_LAST_BOARD=$useLastBoard"
 			}
 			
 			val arguments = listOf(
 				navArgument(ARG_GAME_MODE) {
 					type = NavType.IntType
 					defaultValue = -1
+				},
+				navArgument(ARG_USE_LAST_BOARD) {
+					type = NavType.BoolType
+					defaultValue = false
 				}
 			)
 		}
@@ -43,3 +52,4 @@ sealed class SakuDestination(val route: String) {
 }
 
 const val ARG_GAME_MODE = "game_mode"
+const val ARG_USE_LAST_BOARD = "use_last_board"

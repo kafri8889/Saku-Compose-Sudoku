@@ -9,6 +9,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.anafthdev.saku.common.GameEngine
 import com.anafthdev.saku.data.ARG_GAME_MODE
+import com.anafthdev.saku.data.ARG_USE_LAST_BOARD
 import com.anafthdev.saku.data.GameMode
 import com.anafthdev.saku.data.model.Cell
 import com.anafthdev.saku.data.model.RemainingNumber
@@ -17,6 +18,7 @@ import com.anafthdev.saku.uicomponent.SudokuGameAction
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -29,6 +31,7 @@ class GameViewModel @Inject constructor(
 ): ViewModel() {
 	
 	private val deliveredGameMode: StateFlow<Int> = savedStateHandle.getStateFlow(ARG_GAME_MODE, -1)
+	private val useLastBoardState: StateFlow<Boolean> = savedStateHandle.getStateFlow(ARG_USE_LAST_BOARD, false)
 	
 	private var lastUpdatedCell = Cell.NULL
 	
@@ -67,9 +70,19 @@ class GameViewModel @Inject constructor(
 	
 	init {
 		viewModelScope.launch {
-			userPreferencesRepository.getUserPreferences.collect { preferences ->
+			combine(
+				userPreferencesRepository.getUserPreferences,
+				useLastBoardState
+			) { preferences, use ->
+				preferences to use
+			}.collect { (preferences, use) ->
 				remainingNumberEnabled = preferences.remainingNumberEnabled
 				highlightNumberEnabled = preferences.highlightNumberEnabled
+				
+				if (use) {
+					gameMode = GameMode.values()[preferences.gameMode]
+					gameEngine.init(preferences.boardState, preferences.solvedBoardState)
+				}
 			}
 		}
 		
@@ -176,6 +189,16 @@ class GameViewModel @Inject constructor(
 	
 	fun resume() {
 		gameEngine.resume()
+	}
+	
+	fun exit() {
+		viewModelScope.launch(Dispatchers.IO) {
+			userPreferencesRepository.apply {
+				setGameMode(gameMode.ordinal)
+				setBoardState(gameEngine.getBoardStateInJson())
+				setSolvedBoardState(gameEngine.getSolvedBoardStateInJson())
+			}
+		}
 	}
 	
 }

@@ -3,8 +3,9 @@ option java_package = "com.anafthdev.saku";
 option java_multiple_files = true;
 
 message UserPreferences {
-  string boardState = 1;
-  int32 gameMode = 2;
-  bool highlightNumberEnabled = 3;
-  bool remainingNumberEnabled = 4;
+  int32 gameMode = 1;
+  string boardState = 2;
+  string solvedBoardState = 3;
+  bool highlightNumberEnabled = 4;
+  bool remainingNumberEnabled = 5;
 }

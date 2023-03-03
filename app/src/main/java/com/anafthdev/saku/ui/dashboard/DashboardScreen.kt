@@ -2,6 +2,7 @@ package com.anafthdev.saku.ui.dashboard
 
 import android.content.Intent
 import android.net.Uri
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -78,12 +79,29 @@ fun DashboardScreen(
 			onClick = {
 				navController.navigate(
 					SakuDestination.Game.Home.createRoute(
-						mode = viewModel.selectedGameMode
+						mode = viewModel.selectedGameMode.ordinal
 					)
 				)
 			}
 		) {
 			Text("Play")
+		}
+		
+		AnimatedVisibility(visible = viewModel.canResume) {
+			Spacer(modifier = Modifier.height(8.dp))
+			
+			OutlinedButton(
+				onClick = {
+					navController.navigate(
+						SakuDestination.Game.Home.createRoute(
+							mode = -1,
+							useLastBoard = true
+						)
+					)
+				}
+			) {
+				Text("Resume")
+			}
 		}
 		
 		Spacer(modifier = Modifier.height(16.dp))
