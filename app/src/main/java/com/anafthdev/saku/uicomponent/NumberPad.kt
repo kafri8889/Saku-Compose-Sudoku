@@ -31,6 +31,7 @@ import com.anafthdev.saku.data.model.RemainingNumber
 fun NumberPad(
 	selectedNumber: Int,
 	remainingNumbers: List<RemainingNumber>,
+	showRemainingNumber: Boolean,
 	modifier: Modifier = Modifier,
 	onNumberSelected: (Int) -> Unit
 ) {
@@ -48,12 +49,6 @@ fun NumberPad(
 			val backgroundColor by animateColorAsState(
 				targetValue = if (selected) MaterialTheme.colorScheme.primary else Color.Transparent,
 				animationSpec = tween(500)
-			)
-			
-			val remainingNumber by rememberUpdatedState(
-				newValue = if (remainingNumbers.isNotEmpty()) {
-					remainingNumbers[i - 1].remaining.toString()
-				} else "0"
 			)
 			
 			Box(
@@ -83,13 +78,21 @@ fun NumberPad(
 						)
 					)
 					
-					Text(
-						text = remainingNumber,
-						style = MaterialTheme.typography.labelSmall.copy(
-							color = if (selected) Color.LightGray
-							else Color.Gray
+					if (showRemainingNumber) {
+						val remainingNumber by rememberUpdatedState(
+							newValue = if (remainingNumbers.isNotEmpty()) {
+								remainingNumbers[i - 1].remaining.toString()
+							} else "0"
 						)
-					)
+						
+						Text(
+							text = remainingNumber,
+							style = MaterialTheme.typography.labelSmall.copy(
+								color = if (selected) Color.LightGray
+								else Color.Gray
+							)
+						)
+					}
 				}
 			}
 		}

@@ -12,6 +12,7 @@ import com.anafthdev.saku.data.ARG_GAME_MODE
 import com.anafthdev.saku.data.GameMode
 import com.anafthdev.saku.data.model.Cell
 import com.anafthdev.saku.data.model.RemainingNumber
+import com.anafthdev.saku.data.repository.UserPreferencesRepository
 import com.anafthdev.saku.uicomponent.SudokuGameAction
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -23,7 +24,8 @@ import javax.inject.Inject
 @HiltViewModel
 class GameViewModel @Inject constructor(
 	private val gameEngine: GameEngine,
-	private val savedStateHandle: SavedStateHandle
+	private val savedStateHandle: SavedStateHandle,
+	private val userPreferencesRepository: UserPreferencesRepository
 ): ViewModel() {
 	
 	private val deliveredGameMode: StateFlow<Int> = savedStateHandle.getStateFlow(ARG_GAME_MODE, -1)
@@ -37,6 +39,12 @@ class GameViewModel @Inject constructor(
 		private set
 	
 	var minute by mutableStateOf(0)
+		private set
+	
+	var remainingNumberEnabled by mutableStateOf(false)
+		private set
+	
+	var highlightNumberEnabled by mutableStateOf(false)
 		private set
 	
 	var isPaused by mutableStateOf(false)
@@ -58,6 +66,13 @@ class GameViewModel @Inject constructor(
 	val remainingNumbers = mutableStateListOf<RemainingNumber>()
 	
 	init {
+		viewModelScope.launch {
+			userPreferencesRepository.getUserPreferences.collect { preferences ->
+				remainingNumberEnabled = preferences.remainingNumberEnabled
+				highlightNumberEnabled = preferences.highlightNumberEnabled
+			}
+		}
+		
 		viewModelScope.launch {
 			deliveredGameMode.collect { ordinal ->
 				if (ordinal != -1) {
