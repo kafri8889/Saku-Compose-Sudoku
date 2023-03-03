@@ -11,7 +11,7 @@ import javax.inject.Inject
 @HiltViewModel
 class DashboardViewModel @Inject constructor(): ViewModel() {
 	
-	var selectedGameMode by mutableStateOf(GameMode.Easy)
+	var selectedGameMode by mutableStateOf(GameMode.Fast)
 	private set
 	
 	fun updateGameMode(mode: GameMode) {
