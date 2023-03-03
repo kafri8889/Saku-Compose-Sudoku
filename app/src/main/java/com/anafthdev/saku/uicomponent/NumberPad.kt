@@ -52,7 +52,7 @@ fun NumberPad(
 			
 			val remainingNumber by rememberUpdatedState(
 				newValue = if (remainingNumbers.isNotEmpty()) {
-					remainingNumbers[i - 1].remaining.coerceAtLeast(0).toString()
+					remainingNumbers[i - 1].remaining.toString()
 				} else "0"
 			)
 			
