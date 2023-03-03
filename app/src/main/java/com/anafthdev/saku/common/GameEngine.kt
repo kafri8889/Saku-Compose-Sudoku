@@ -241,7 +241,19 @@ class GameEngine @Inject constructor(
 	}
 	
 	fun checkWin(): Boolean {
-		return sudoku.board.contentDeepEquals(sudoku.solvedBoard)
+		var win: Boolean
+		
+		val board = currentBoard.replayCache[currentBoard.replayCache.lastIndex]
+		
+		for (i in 0 until 9) {
+			for (j in 0 until 9) {
+				win = board[i].subCells[j].n == solvedBoard[i].subCells[j].n
+				
+				if (!win) return false
+			}
+		}
+		
+		return true
 	}
 	
 	fun undo() {
