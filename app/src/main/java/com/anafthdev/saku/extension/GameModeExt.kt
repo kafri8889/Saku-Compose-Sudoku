@@ -4,6 +4,7 @@ import com.anafthdev.saku.data.GameMode
 
 val GameMode.missingDigits: Int
 	get() = when (this) {
+		GameMode.Fast -> 28
 		GameMode.Easy -> 36
 		GameMode.Normal -> 44
 		GameMode.Hard -> 52
