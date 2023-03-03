@@ -8,5 +8,5 @@ val GameMode.missingDigits: Int
 		GameMode.Easy -> 36
 		GameMode.Normal -> 44
 		GameMode.Hard -> 52
-		GameMode.Evil -> 64
+		GameMode.Evil -> 60
 	}
