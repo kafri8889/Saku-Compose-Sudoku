@@ -4,23 +4,29 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.anafthdev.saku.common.GameEngine
+import com.anafthdev.saku.data.ARG_GAME_MODE
 import com.anafthdev.saku.data.GameMode
 import com.anafthdev.saku.data.model.Cell
 import com.anafthdev.saku.data.model.RemainingNumber
 import com.anafthdev.saku.uicomponent.SudokuGameAction
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
 class GameViewModel @Inject constructor(
-	private val gameEngine: GameEngine
+	private val gameEngine: GameEngine,
+	private val savedStateHandle: SavedStateHandle
 ): ViewModel() {
+	
+	private val deliveredGameMode: StateFlow<Int> = savedStateHandle.getStateFlow(ARG_GAME_MODE, -1)
 	
 	private var lastUpdatedCell = Cell.NULL
 	
@@ -39,7 +45,7 @@ class GameViewModel @Inject constructor(
 	var win by mutableStateOf(false)
 		private set
 	
-	var gameMode by mutableStateOf(GameMode.Easy)
+	var gameMode by mutableStateOf(GameMode.Fast)
 		private set
 	
 	var selectedCell by mutableStateOf(Cell(1))
@@ -52,6 +58,16 @@ class GameViewModel @Inject constructor(
 	val remainingNumbers = mutableStateListOf<RemainingNumber>()
 	
 	init {
+		viewModelScope.launch {
+			deliveredGameMode.collect { ordinal ->
+				if (ordinal != -1) {
+					gameMode = GameMode.values()[ordinal]
+					
+					gameEngine.init(gameMode)
+				}
+			}
+		}
+		
 		viewModelScope.launch {
 			gameEngine.win.collect { mWin ->
 				println("win: $mWin")
@@ -90,12 +106,6 @@ class GameViewModel @Inject constructor(
 		}
 	}
 	
-	fun init() {
-		viewModelScope.launch {
-			gameEngine.init(GameMode.Easy)
-		}
-	}
-	
 	fun updateBoard(cell: Cell) {
 		viewModelScope.launch {
 			if (cell.missingNum) {
@@ -103,9 +113,9 @@ class GameViewModel @Inject constructor(
 				gameEngine.updateBoard(cell, selectedNumber, selectedGameAction)
 			}
 			
-			selectedCell = if (!cell.missingNum) {
-				if (selectedCell.n == cell.n) Cell.NULL else cell
-			} else Cell.NULL
+			if (cell.n != 0) {
+				selectedCell = cell
+			}
 		}
 	}
 	

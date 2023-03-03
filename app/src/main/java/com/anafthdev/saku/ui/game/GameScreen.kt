@@ -38,10 +38,6 @@ fun GameScreen(
 	
 	val context = LocalContext.current
 	
-	LaunchedEffect(Unit) {
-		viewModel.init()
-	}
-	
 	LaunchedEffect(viewModel.win) {
 		if (viewModel.win) {
 			"Win".toast(context)
