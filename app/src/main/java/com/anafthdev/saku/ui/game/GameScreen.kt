@@ -75,6 +75,7 @@ fun GameScreen(
 				cells = viewModel.board,
 				selectedCell = viewModel.selectedCell,
 				onCellClicked = viewModel::updateBoard,
+				highlightNumberEnabled = viewModel.highlightNumberEnabled,
 				modifier = Modifier
 					.fillMaxWidth()
 					.aspectRatio(1f / 1f)

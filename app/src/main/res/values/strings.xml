@@ -5,4 +5,8 @@
     <string name="pencil">Pencil</string>
     <string name="eraser">Eraser</string>
     <string name="redo">Redo</string>
+    <string name="highlight_same_numbers">Highlight same numbers</string>
+    <string name="remaining_numbers">Remaining numbers</string>
+    <string name="remaining_numbers_msg">Show the numbers remaining from the board</string>
+    <string name="highlight_same_numbers_msg">When a number is selected, the same number on the board will be highlighted</string>
 </resources>

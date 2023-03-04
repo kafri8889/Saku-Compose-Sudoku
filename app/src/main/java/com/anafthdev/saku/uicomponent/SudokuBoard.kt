@@ -56,6 +56,7 @@ import com.anafthdev.saku.data.model.Cell
 fun SudokuBoard(
 	cells: List<Cell>,
 	selectedCell: Cell,
+	highlightNumberEnabled: Boolean,
 	modifier: Modifier = Modifier,
 	shape: Shape = RoundedCornerShape(5),
 	onCellClicked: (Cell) -> Unit
@@ -97,7 +98,7 @@ fun SudokuBoard(
 							CellBox(
 								cell = cell,
 								index = i,
-								selected = selectedCell.n == cell.n,
+								selected = selectedCell.n == cell.n && highlightNumberEnabled,
 								onClick = {
 									onCellClicked(cell)
 								},
@@ -123,7 +124,7 @@ fun SudokuBoard(
 							CellBox(
 								cell = cell,
 								index = i,
-								selected = selectedCell.n == cell.n,
+								selected = selectedCell.n == cell.n && highlightNumberEnabled,
 								onClick = {
 									onCellClicked(cell)
 								},
@@ -149,7 +150,7 @@ fun SudokuBoard(
 							CellBox(
 								cell = cell,
 								index = i,
-								selected = selectedCell.n == cell.n,
+								selected = selectedCell.n == cell.n && highlightNumberEnabled,
 								onClick = {
 									onCellClicked(cell)
 								},
