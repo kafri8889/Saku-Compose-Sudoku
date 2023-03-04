@@ -19,7 +19,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 
 @Composable
-fun GamePausedDialog(
+fun SakuDialog(
 	modifier: Modifier = Modifier,
 	shape: Shape = AlertDialogDefaults.shape,
 	containerColor: Color = AlertDialogDefaults.containerColor,

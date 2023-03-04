@@ -40,8 +40,8 @@ import com.anafthdev.saku.data.GameMode
 import com.anafthdev.saku.extension.hourMinuteFormat
 import com.anafthdev.saku.extension.toast
 import com.anafthdev.saku.uicomponent.AnimatedTextByChar
-import com.anafthdev.saku.uicomponent.GamePausedDialog
 import com.anafthdev.saku.uicomponent.NumberPad
+import com.anafthdev.saku.uicomponent.SakuDialog
 import com.anafthdev.saku.uicomponent.SudokuBoard
 import com.anafthdev.saku.uicomponent.SudokuGameAction
 import com.anafthdev.saku.uicomponent.SudokuGameActionDefaults
@@ -77,7 +77,7 @@ fun GameScreen(
 	)
 	
 	if (isPaused) {
-		GamePausedDialog(
+		SakuDialog(
 			onDismissRequest = {
 				viewModel.resume()
 				isPaused = false
