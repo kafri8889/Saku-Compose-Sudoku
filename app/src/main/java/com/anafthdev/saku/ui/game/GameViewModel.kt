@@ -7,6 +7,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.anafthdev.saku.common.CountUpTimer
 import com.anafthdev.saku.common.GameEngine
 import com.anafthdev.saku.data.ARG_GAME_MODE
 import com.anafthdev.saku.data.ARG_USE_LAST_BOARD
@@ -26,6 +27,7 @@ import javax.inject.Inject
 @HiltViewModel
 class GameViewModel @Inject constructor(
 	private val gameEngine: GameEngine,
+	private val countUpTimer: CountUpTimer,
 	private val savedStateHandle: SavedStateHandle,
 	private val userPreferencesRepository: UserPreferencesRepository
 ): ViewModel() {
@@ -149,6 +151,22 @@ class GameViewModel @Inject constructor(
 		}
 	}
 	
+	override fun onCleared() {
+		exit()
+		
+		super.onCleared()
+	}
+	
+	fun saveState() {
+		viewModelScope.launch(Dispatchers.IO) {
+			userPreferencesRepository.apply {
+				setGameMode(gameMode.ordinal)
+				setBoardState(gameEngine.getBoardStateInJson())
+				setSolvedBoardState(gameEngine.getSolvedBoardStateInJson())
+			}
+		}
+	}
+	
 	fun updateBoard(cell: Cell) {
 		viewModelScope.launch {
 			if (cell.missingNum) {
@@ -208,6 +226,7 @@ class GameViewModel @Inject constructor(
 	
 	fun exit() {
 		viewModelScope.launch(Dispatchers.IO) {
+			countUpTimer.reset()
 			userPreferencesRepository.apply {
 				setGameMode(gameMode.ordinal)
 				setBoardState(gameEngine.getBoardStateInJson())

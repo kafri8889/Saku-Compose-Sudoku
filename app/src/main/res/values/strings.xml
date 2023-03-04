@@ -9,4 +9,7 @@
     <string name="remaining_numbers">Remaining numbers</string>
     <string name="remaining_numbers_msg">Show the numbers remaining from the board</string>
     <string name="highlight_same_numbers_msg">When a number is selected, the same number on the board will be highlighted</string>
+    <string name="game_paused">Game paused</string>
+    <string name="exit">Exit</string>
+    <string name="resume">Resume</string>
 </resources>

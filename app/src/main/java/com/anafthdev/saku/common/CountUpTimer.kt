@@ -17,6 +17,10 @@ class CountUpTimer @Inject constructor() {
 	private val _second = MutableStateFlow(0)
 	val second: StateFlow<Int> = _second
 	
+	suspend fun reset() {
+		_second.emit(0)
+	}
+	
 	fun start() {
 		timerJob = CoroutineScope(Dispatchers.IO).launch {
 			while (true) {
