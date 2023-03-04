@@ -1,6 +1,10 @@
 package com.anafthdev.saku.ui.game
 
 import androidx.activity.compose.BackHandler
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -76,7 +80,15 @@ fun GameScreen(
 		}
 	)
 	
-	if (isPaused) {
+	AnimatedVisibility(
+		visible = isPaused,
+		enter = fadeIn(
+			animationSpec = tween(250)
+		),
+		exit = fadeOut(
+			animationSpec = tween(250)
+		)
+	) {
 		SakuDialog(
 			onDismissRequest = {
 				viewModel.resume()
