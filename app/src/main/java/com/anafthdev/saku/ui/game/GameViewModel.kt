@@ -69,29 +69,44 @@ class GameViewModel @Inject constructor(
 	val remainingNumbers = mutableStateListOf<RemainingNumber>()
 	
 	init {
-		viewModelScope.launch {
+		viewModelScope.launch(Dispatchers.IO) {
 			combine(
 				userPreferencesRepository.getUserPreferences,
 				useLastBoardState
 			) { preferences, use ->
 				preferences to use
 			}.collect { (preferences, use) ->
-				remainingNumberEnabled = preferences.remainingNumberEnabled
-				highlightNumberEnabled = preferences.highlightNumberEnabled
-				
-				if (use) {
-					gameMode = GameMode.values()[preferences.gameMode]
-					gameEngine.init(preferences.boardState, preferences.solvedBoardState)
+				withContext(Dispatchers.Main) {
+					remainingNumberEnabled = preferences.remainingNumberEnabled
+					highlightNumberEnabled = preferences.highlightNumberEnabled
+					
+					if (use) {
+						gameMode = GameMode.values()[preferences.gameMode]
+						
+						withContext(Dispatchers.IO) {
+							gameEngine.init(
+								preferences.boardState,
+								preferences.solvedBoardState
+							)
+						}
+					}
 				}
 			}
 		}
 		
-		viewModelScope.launch {
+		viewModelScope.launch(Dispatchers.IO) {
 			deliveredGameMode.collect { ordinal ->
-				if (ordinal != -1) {
-					gameMode = GameMode.values()[ordinal]
-					
-					gameEngine.init(gameMode)
+				withContext(Dispatchers.Main) {
+					if (ordinal != -1) {
+						gameMode = GameMode.values()[ordinal]
+						
+						// Get gameMode from mutableState in main thread
+						val mGameMode = gameMode
+						
+						withContext(Dispatchers.IO) {
+							gameEngine.init(mGameMode)
+						}
+					}
 				}
 			}
 		}

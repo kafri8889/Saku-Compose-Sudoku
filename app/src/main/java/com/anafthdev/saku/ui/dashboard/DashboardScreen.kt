@@ -77,6 +77,8 @@ fun DashboardScreen(
 		
 		OutlinedButton(
 			onClick = {
+//				viewModel.createGame()
+				
 				navController.navigate(
 					SakuDestination.Game.Home.createRoute(
 						mode = viewModel.selectedGameMode.ordinal
@@ -92,12 +94,14 @@ fun DashboardScreen(
 			
 			OutlinedButton(
 				onClick = {
-					navController.navigate(
-						SakuDestination.Game.Home.createRoute(
-							mode = -1,
-							useLastBoard = true
-						)
-					)
+//					viewModel.createGame(true)
+					
+//					navController.navigate(
+//						SakuDestination.Game.Home.createRoute(
+//							mode = -1,
+//							useLastBoard = true
+//						)
+//					)
 				}
 			) {
 				Text("Resume")
