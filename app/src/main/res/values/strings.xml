@@ -12,4 +12,7 @@
     <string name="game_paused">Game paused</string>
     <string name="exit">Exit</string>
     <string name="resume">Resume</string>
+    <string name="cancel">Cancel</string>
+    <string name="new_game">New game</string>
+    <string name="new_game_dialog_msg">Your previous game will be lost, are you sure you want to continue?</string>
 </resources>

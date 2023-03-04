@@ -20,6 +20,9 @@ class DashboardViewModel @Inject constructor(
 	var canResume by mutableStateOf(false)
 		private set
 	
+	var showNewGameDialog by mutableStateOf(false)
+		private set
+	
 	var lastGameMode by mutableStateOf(GameMode.Fast)
 		private set
 	
@@ -41,5 +44,9 @@ class DashboardViewModel @Inject constructor(
 	
 	fun updateGameMode(mode: GameMode) {
 		selectedGameMode = mode
+	}
+	
+	fun updateShowNewGameDialog(show: Boolean) {
+		showNewGameDialog = show
 	}
 }
