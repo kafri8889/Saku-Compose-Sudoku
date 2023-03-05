@@ -11,6 +11,7 @@ import javax.inject.Inject
 
 class CountUpTimer @Inject constructor() {
 	
+	private var isPaused: Boolean = true
 	private var timerJob: Job? = null
 	private var listener: CountUpTimerListener? = null
 	
@@ -22,20 +23,25 @@ class CountUpTimer @Inject constructor() {
 	}
 	
 	fun start() {
-		timerJob = CoroutineScope(Dispatchers.IO).launch {
-			while (true) {
-				delay(1000)
-				
-				_second.emit(second.value + 1)
-				
-				listener?.onTick()
+		if (timerJob == null) {
+			timerJob = CoroutineScope(Dispatchers.IO).launch {
+				while (true) {
+					delay(1000)
+					
+					if (!isPaused) {
+						_second.emit(second.value + 1)
+						
+						listener?.onTick()
+					}
+				}
 			}
 		}
+		
+		isPaused = false
 	}
 	
 	fun cancel() {
-		timerJob?.cancel()
-		timerJob = null
+		isPaused = true
 	}
 	
 	fun setListener(l: CountUpTimerListener) {

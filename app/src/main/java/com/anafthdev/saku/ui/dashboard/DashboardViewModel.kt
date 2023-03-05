@@ -10,6 +10,7 @@ import com.anafthdev.saku.data.Difficulty
 import com.anafthdev.saku.data.repository.UserPreferencesRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -34,6 +35,7 @@ class DashboardViewModel @Inject constructor(
 	init {
 		viewModelScope.launch {
 			userPreferencesRepository.getUserPreferences.collect { preferences ->
+				Timber.i("borstet: ${preferences.boardState}")
 				canResume = preferences.boardState.isNotBlank()
 				lastDifficulty = Difficulty.values()[preferences.gameMode]
 				

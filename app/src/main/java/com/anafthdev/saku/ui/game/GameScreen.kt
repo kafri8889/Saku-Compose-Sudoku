@@ -66,6 +66,7 @@ fun GameScreen(
 	
 	LaunchedEffect(viewModel.win) {
 		if (viewModel.win) {
+			viewModel.exit()
 			"Win".toast(context)
 		}
 	}

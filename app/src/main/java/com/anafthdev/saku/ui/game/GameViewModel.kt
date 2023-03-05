@@ -22,6 +22,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -36,6 +37,7 @@ class GameViewModel @Inject constructor(
 	private val useLastBoardState: StateFlow<Boolean> = savedStateHandle.getStateFlow(ARG_USE_LAST_BOARD, false)
 	
 	private var lastUpdatedCell = Cell.NULL
+	private var hasWin = false
 	
 	var selectedNumber by mutableStateOf(1)
 		private set
@@ -85,14 +87,16 @@ class GameViewModel @Inject constructor(
 					remainingNumberEnabled = preferences.remainingNumberEnabled
 					highlightNumberEnabled = preferences.highlightNumberEnabled
 					
-					if (use) {
+					if (use and !hasWin) {
 						difficulty = Difficulty.values()[preferences.gameMode]
 						
 						withContext(Dispatchers.IO) {
-							gameEngine.init(
-								preferences.boardState,
-								preferences.solvedBoardState
-							)
+							if (preferences.boardState.isNotBlank() and preferences.solvedBoardState.isNotBlank()) {
+								gameEngine.init(
+									preferences.boardState,
+									preferences.solvedBoardState
+								)
+							}
 						}
 					}
 				}
@@ -109,7 +113,9 @@ class GameViewModel @Inject constructor(
 						val mGameMode = difficulty
 						
 						withContext(Dispatchers.IO) {
-							gameEngine.init(mGameMode)
+							if (!hasWin) {
+								gameEngine.init(mGameMode)
+							}
 						}
 					}
 				}
@@ -122,8 +128,10 @@ class GameViewModel @Inject constructor(
 				
 				win = mWin
 				
-				if (win) countUpTimer.cancel()
-				else countUpTimer.start()
+				if (mWin) {
+					gameEngine.pause()
+					hasWin = true
+				} else gameEngine.resume()
 			}
 		}
 		
@@ -165,11 +173,13 @@ class GameViewModel @Inject constructor(
 	}
 	
 	fun saveState() {
-		viewModelScope.launch(Dispatchers.IO) {
-			userPreferencesRepository.apply {
-				setGameMode(difficulty.ordinal)
-				setBoardState(gameEngine.getBoardStateInJson())
-				setSolvedBoardState(gameEngine.getSolvedBoardStateInJson())
+		if (!hasWin) {
+			viewModelScope.launch(Dispatchers.IO) {
+				userPreferencesRepository.apply {
+					setGameMode(difficulty.ordinal)
+					setBoardState(gameEngine.getBoardStateInJson())
+					setSolvedBoardState(gameEngine.getSolvedBoardStateInJson())
+				}
 			}
 		}
 	}
@@ -232,12 +242,20 @@ class GameViewModel @Inject constructor(
 	}
 	
 	fun exit() {
-		viewModelScope.launch(Dispatchers.IO) {
+		Timber.i("exit koll")
+		pause()
+		viewModelScope.launch {
 			countUpTimer.reset()
 			userPreferencesRepository.apply {
-				setGameMode(difficulty.ordinal)
-				setBoardState(gameEngine.getBoardStateInJson())
-				setSolvedBoardState(gameEngine.getSolvedBoardStateInJson())
+				if (win) {
+					setGameMode(0)
+					setBoardState("")
+					setSolvedBoardState("")
+				} else {
+					setGameMode(difficulty.ordinal)
+					setBoardState(gameEngine.getBoardStateInJson())
+					setSolvedBoardState(gameEngine.getSolvedBoardStateInJson())
+				}
 			}
 		}
 	}
