@@ -6,7 +6,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.anafthdev.saku.UserPreferences
-import com.anafthdev.saku.data.GameMode
+import com.anafthdev.saku.data.Difficulty
 import com.anafthdev.saku.data.repository.UserPreferencesRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -23,10 +23,10 @@ class DashboardViewModel @Inject constructor(
 	var showNewGameDialog by mutableStateOf(false)
 		private set
 	
-	var lastGameMode by mutableStateOf(GameMode.Fast)
+	var lastDifficulty by mutableStateOf(Difficulty.Fast)
 		private set
 	
-	var selectedGameMode by mutableStateOf(GameMode.Fast)
+	var selectedDifficulty by mutableStateOf(Difficulty.Fast)
 		private set
 	
 	private var userPreferences = UserPreferences()
@@ -35,15 +35,15 @@ class DashboardViewModel @Inject constructor(
 		viewModelScope.launch {
 			userPreferencesRepository.getUserPreferences.collect { preferences ->
 				canResume = preferences.boardState.isNotBlank()
-				lastGameMode = GameMode.values()[preferences.gameMode]
+				lastDifficulty = Difficulty.values()[preferences.gameMode]
 				
 				userPreferences = preferences
 			}
 		}
 	}
 	
-	fun updateGameMode(mode: GameMode) {
-		selectedGameMode = mode
+	fun updateGameMode(mode: Difficulty) {
+		selectedDifficulty = mode
 	}
 	
 	fun updateShowNewGameDialog(show: Boolean) {

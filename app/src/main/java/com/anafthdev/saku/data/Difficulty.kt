@@ -1,6 +1,6 @@
 package com.anafthdev.saku.data
 
-enum class GameMode {
+enum class Difficulty {
 	Fast,
 	Easy,
 	Normal,

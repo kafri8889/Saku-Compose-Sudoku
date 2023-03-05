@@ -11,7 +11,7 @@ import com.anafthdev.saku.common.CountUpTimer
 import com.anafthdev.saku.common.GameEngine
 import com.anafthdev.saku.data.ARG_GAME_MODE
 import com.anafthdev.saku.data.ARG_USE_LAST_BOARD
-import com.anafthdev.saku.data.GameMode
+import com.anafthdev.saku.data.Difficulty
 import com.anafthdev.saku.data.model.Cell
 import com.anafthdev.saku.data.model.RemainingNumber
 import com.anafthdev.saku.data.repository.UserPreferencesRepository
@@ -58,7 +58,7 @@ class GameViewModel @Inject constructor(
 	var win by mutableStateOf(false)
 		private set
 	
-	var gameMode by mutableStateOf(GameMode.Fast)
+	var difficulty by mutableStateOf(Difficulty.Fast)
 		private set
 	
 	var selectedCell by mutableStateOf(Cell(1))
@@ -83,7 +83,7 @@ class GameViewModel @Inject constructor(
 					highlightNumberEnabled = preferences.highlightNumberEnabled
 					
 					if (use) {
-						gameMode = GameMode.values()[preferences.gameMode]
+						difficulty = Difficulty.values()[preferences.gameMode]
 						
 						withContext(Dispatchers.IO) {
 							gameEngine.init(
@@ -100,10 +100,10 @@ class GameViewModel @Inject constructor(
 			deliveredGameMode.collect { ordinal ->
 				withContext(Dispatchers.Main) {
 					if (ordinal != -1) {
-						gameMode = GameMode.values()[ordinal]
+						difficulty = Difficulty.values()[ordinal]
 						
-						// Get gameMode from mutableState in main thread
-						val mGameMode = gameMode
+						// Get difficulty from mutableState in main thread
+						val mGameMode = difficulty
 						
 						withContext(Dispatchers.IO) {
 							gameEngine.init(mGameMode)
@@ -160,7 +160,7 @@ class GameViewModel @Inject constructor(
 	fun saveState() {
 		viewModelScope.launch(Dispatchers.IO) {
 			userPreferencesRepository.apply {
-				setGameMode(gameMode.ordinal)
+				setGameMode(difficulty.ordinal)
 				setBoardState(gameEngine.getBoardStateInJson())
 				setSolvedBoardState(gameEngine.getSolvedBoardStateInJson())
 			}
@@ -228,7 +228,7 @@ class GameViewModel @Inject constructor(
 		viewModelScope.launch(Dispatchers.IO) {
 			countUpTimer.reset()
 			userPreferencesRepository.apply {
-				setGameMode(gameMode.ordinal)
+				setGameMode(difficulty.ordinal)
 				setBoardState(gameEngine.getBoardStateInJson())
 				setSolvedBoardState(gameEngine.getSolvedBoardStateInJson())
 			}

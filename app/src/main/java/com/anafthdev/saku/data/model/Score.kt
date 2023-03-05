@@ -3,7 +3,7 @@ package com.anafthdev.saku.data.model
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.anafthdev.saku.data.GameMode
+import com.anafthdev.saku.data.Difficulty
 
 @Entity(tableName = "score")
 data class Score(
@@ -16,7 +16,7 @@ data class Score(
 	@ColumnInfo(name = "time_score") val time: Int,
 	
 	/**
-	 * [GameMode] ordinal
+	 * [Difficulty] ordinal
 	 */
 	@ColumnInfo(name = "difficulty_score") val difficulty: Int,
 )

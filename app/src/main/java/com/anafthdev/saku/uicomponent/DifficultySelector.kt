@@ -16,25 +16,25 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
-import com.anafthdev.saku.data.GameMode
+import com.anafthdev.saku.data.Difficulty
 import timber.log.Timber
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
-fun GameModeSelector(
-	gameModes: Array<GameMode>,
-	selectedGameMode: GameMode,
+fun DifficultySelector(
+	difficulties: Array<Difficulty>,
+	selectedDifficulty: Difficulty,
 	modifier: Modifier = Modifier,
-	onGameModeChanged: (GameMode) -> Unit
+	onGameModeChanged: (Difficulty) -> Unit
 ) {
 	
 	val density = LocalDensity.current
 	val config = LocalConfiguration.current
 	
-	val selectedGameModeIndex = remember(selectedGameMode, gameModes) {
-		Timber.i("$selectedGameMode -> $gameModes")
-		gameModes.indexOfFirst { it == selectedGameMode }.also {
-			Timber.i("selectedGameModeIndex: $it")
+	val selectedGameModeIndex = remember(selectedDifficulty, difficulties) {
+		Timber.i("$selectedDifficulty -> $difficulties")
+		difficulties.indexOfFirst { it == selectedDifficulty }.also {
+			Timber.i("selectedDifficultyIndex: $it")
 		}
 	}
 	
@@ -44,7 +44,7 @@ fun GameModeSelector(
 	)
 	
 	val forwardButtonAlpha by animateFloatAsState(
-		targetValue = if (selectedGameModeIndex >= gameModes.lastIndex) 0f else 1f,
+		targetValue = if (selectedGameModeIndex >= difficulties.lastIndex) 0f else 1f,
 		animationSpec = tween(500)
 	)
 	
@@ -63,7 +63,7 @@ fun GameModeSelector(
 		IconButton(
 			onClick = {
 				if (selectedGameModeIndex > 0) {
-					onGameModeChanged(gameModes[selectedGameModeIndex - 1])
+					onGameModeChanged(difficulties[selectedGameModeIndex - 1])
 					
 					// Left
 					enterAnimOffset = with(density) { -config.screenWidthDp.dp.roundToPx() }
@@ -82,7 +82,7 @@ fun GameModeSelector(
 		}
 		
 		AnimatedContent(
-			targetState = selectedGameMode,
+			targetState = selectedDifficulty,
 			transitionSpec = {
 				slideInHorizontally(
 					initialOffsetX = { enterAnimOffset },
@@ -101,8 +101,8 @@ fun GameModeSelector(
 		
 		IconButton(
 			onClick = {
-				if (selectedGameModeIndex < gameModes.lastIndex) {
-					onGameModeChanged(gameModes[selectedGameModeIndex + 1])
+				if (selectedGameModeIndex < difficulties.lastIndex) {
+					onGameModeChanged(difficulties[selectedGameModeIndex + 1])
 					
 					// Right
 					enterAnimOffset = with(density) { config.screenWidthDp.dp.roundToPx() }
@@ -123,7 +123,7 @@ fun GameModeSelector(
 	
 }
 
-enum class GameModeSelectorDirection {
+enum class DifficultySelectorDirection {
 	LEFT,
 	RIGHT
 }

@@ -40,7 +40,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.anafthdev.saku.R
 import com.anafthdev.saku.component.ObserveLifecycle
-import com.anafthdev.saku.data.GameMode
+import com.anafthdev.saku.data.Difficulty
 import com.anafthdev.saku.extension.hourMinuteFormat
 import com.anafthdev.saku.extension.toast
 import com.anafthdev.saku.uicomponent.AnimatedTextByChar
@@ -150,7 +150,7 @@ fun GameContent(
 			GameScreenHeader(
 				minute = viewModel.minute,
 				second = viewModel.second,
-				gameMode = viewModel.gameMode,
+				difficulty = viewModel.difficulty,
 				onPause = onPause
 			)
 		}
@@ -215,7 +215,7 @@ fun GameContent(
 private fun GameScreenHeader(
 	minute: Int,
 	second: Int,
-	gameMode: GameMode,
+	difficulty: Difficulty,
 	onPause: () -> Unit
 ) {
 	
@@ -229,7 +229,7 @@ private fun GameScreenHeader(
 			)
 			
 			Text(
-				text = gameMode.name,
+				text = difficulty.name,
 				style = MaterialTheme.typography.titleLarge.copy(
 					fontWeight = FontWeight.Light,
 					color = Color.Gray

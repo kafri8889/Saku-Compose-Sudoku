@@ -1,6 +1,6 @@
 package com.anafthdev.saku.common
 
-import com.anafthdev.saku.data.GameMode
+import com.anafthdev.saku.data.Difficulty
 import com.anafthdev.saku.data.model.Cell
 import com.anafthdev.saku.data.model.RemainingNumber
 import com.anafthdev.saku.extension.missingDigits
@@ -131,8 +131,8 @@ class GameEngine @Inject constructor(
 		return if (json.isBlank()) emptyList() else gson.fromJson(json, Array<Cell>::class.java).toList()
 	}
 	
-	suspend fun init(gameMode: GameMode) {
-		sudoku.init(9, gameMode.missingDigits)
+	suspend fun init(difficulty: Difficulty) {
+		sudoku.init(9, difficulty.missingDigits)
 		
 		sudoku.printBoard().let {
 			val cellBoards = toCellBoard(it)

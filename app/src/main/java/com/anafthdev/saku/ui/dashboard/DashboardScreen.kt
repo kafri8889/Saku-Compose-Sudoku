@@ -42,9 +42,9 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.anafthdev.saku.R
-import com.anafthdev.saku.data.GameMode
+import com.anafthdev.saku.data.Difficulty
 import com.anafthdev.saku.data.SakuDestination
-import com.anafthdev.saku.uicomponent.GameModeSelector
+import com.anafthdev.saku.uicomponent.DifficultySelector
 import com.anafthdev.saku.uicomponent.SakuDialog
 
 @Composable
@@ -79,7 +79,7 @@ fun DashboardScreen(
 					onClick = {
 						navController.navigate(
 							SakuDestination.Game.Home.createRoute(
-								mode = viewModel.selectedGameMode.ordinal
+								mode = viewModel.selectedDifficulty.ordinal
 							)
 						)
 					},
@@ -120,9 +120,9 @@ fun DashboardScreen(
 		
 		Spacer(modifier = Modifier.height(8.dp))
 		
-		GameModeSelector(
-			gameModes = GameMode.values(),
-			selectedGameMode = viewModel.selectedGameMode,
+		DifficultySelector(
+			difficulties = Difficulty.values(),
+			selectedDifficulty = viewModel.selectedDifficulty,
 			onGameModeChanged = viewModel::updateGameMode,
 			modifier = Modifier
 				.fillMaxWidth(0.6f)
@@ -139,7 +139,7 @@ fun DashboardScreen(
 				
 				navController.navigate(
 					SakuDestination.Game.Home.createRoute(
-						mode = viewModel.selectedGameMode.ordinal
+						mode = viewModel.selectedDifficulty.ordinal
 					)
 				)
 			}

@@ -1,6 +1,6 @@
 package com.anafthdev.saku.data.local.database
 
-import com.anafthdev.saku.data.GameMode
+import com.anafthdev.saku.data.Difficulty
 import com.anafthdev.saku.data.model.Score
 
 object ScoreDataProvider {
@@ -10,19 +10,19 @@ object ScoreDataProvider {
 			id = 0,
 			date = System.currentTimeMillis(),
 			time = 3630,
-			difficulty = GameMode.Easy.ordinal
+			difficulty = Difficulty.Easy.ordinal
 		),
 		Score(
 			id = 1,
 			date = System.currentTimeMillis(),
 			time = 6,
-			difficulty = GameMode.Evil.ordinal
+			difficulty = Difficulty.Evil.ordinal
 		),
 		Score(
 			id = 2,
 			date = System.currentTimeMillis(),
 			time = 85,
-			difficulty = GameMode.Normal.ordinal
+			difficulty = Difficulty.Normal.ordinal
 		),
 	)
 	
