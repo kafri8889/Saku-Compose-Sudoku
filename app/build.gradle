@@ -95,7 +95,7 @@ dependencies {
     implementation "androidx.hilt:hilt-navigation-compose:1.0.0"
 
     // Constraint layout
-    implementation "androidx.constraintlayout:constraintlayout-compose:1.0.1"
+    implementation "androidx.constraintlayout:constraintlayout-compose:1.1.0-alpha07"
 
     // Material Design
     implementation 'com.google.android.material:material:1.8.0'
