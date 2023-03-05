@@ -18,4 +18,5 @@
     <string name="date">Date</string>
     <string name="time">Time</string>
     <string name="difficulty">Difficulty</string>
+    <string name="you_have_no_game_history">You have no game history</string>
 </resources>
