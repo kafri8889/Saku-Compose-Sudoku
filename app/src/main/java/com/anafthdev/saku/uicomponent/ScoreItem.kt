@@ -59,6 +59,10 @@ fun ScoreItem(
 		hourMinuteFormat((score.time / 60) % 60)
 	}
 	
+	val hours = remember {
+		hourMinuteFormat(score.time / 3600)
+	}
+	
 	Card(modifier = modifier) {
 		Row(
 			verticalAlignment = Alignment.CenterVertically,
@@ -135,7 +139,7 @@ fun ScoreItem(
 					Spacer(modifier = Modifier.height(4.dp))
 					
 					Text(
-						text = "$minute:$second",
+						text = "$hours:$minute:$second",
 						style = MaterialTheme.typography.bodyMedium
 					)
 				}

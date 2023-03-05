@@ -150,6 +150,7 @@ fun GameContent(
 			GameScreenHeader(
 				minute = viewModel.minute,
 				second = viewModel.second,
+				hours = viewModel.hours,
 				difficulty = viewModel.difficulty,
 				onPause = onPause
 			)
@@ -215,6 +216,7 @@ fun GameContent(
 private fun GameScreenHeader(
 	minute: Int,
 	second: Int,
+	hours: Int,
 	difficulty: Difficulty,
 	onPause: () -> Unit
 ) {
@@ -222,7 +224,7 @@ private fun GameScreenHeader(
 	Row {
 		Column {
 			AnimatedTextByChar(
-				text = "${hourMinuteFormat(minute)}:${hourMinuteFormat(second)}",
+				text = "${hourMinuteFormat(hours)}:${hourMinuteFormat(minute)}:${hourMinuteFormat(second)}",
 				style = MaterialTheme.typography.titleLarge.copy(
 					fontWeight = FontWeight.ExtraBold
 				)

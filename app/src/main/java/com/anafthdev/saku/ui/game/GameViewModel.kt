@@ -46,6 +46,9 @@ class GameViewModel @Inject constructor(
 	var minute by mutableStateOf(0)
 		private set
 	
+	var hours by mutableStateOf(0)
+		private set
+	
 	var remainingNumberEnabled by mutableStateOf(false)
 		private set
 	
@@ -146,6 +149,7 @@ class GameViewModel @Inject constructor(
 				withContext(Dispatchers.Main) {
 					second = sec % 60
 					minute = (sec / 60) % 60
+					hours = sec / 3600
 				}
 			}
 		}
