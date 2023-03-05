@@ -20,7 +20,7 @@ class MainActivity : ComponentActivity() {
 		WindowCompat.setDecorFitsSystemWindows(window, false)
 		
 		setContent {
-			SakuTheme {
+			SakuTheme(darkTheme = false) {
 				Surface(
 					modifier = Modifier.fillMaxSize(),
 					color = MaterialTheme.colorScheme.background
