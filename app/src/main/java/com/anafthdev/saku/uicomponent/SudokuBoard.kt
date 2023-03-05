@@ -56,6 +56,7 @@ import com.anafthdev.saku.data.model.Cell
 fun SudokuBoard(
 	cells: List<Cell>,
 	selectedCell: Cell,
+	win: Boolean,
 	highlightNumberEnabled: Boolean,
 	modifier: Modifier = Modifier,
 	shape: Shape = RoundedCornerShape(5),
@@ -98,6 +99,7 @@ fun SudokuBoard(
 							CellBox(
 								cell = cell,
 								index = i,
+								win = win,
 								selected = selectedCell.n == cell.n && highlightNumberEnabled,
 								onClick = {
 									onCellClicked(cell)
@@ -124,6 +126,7 @@ fun SudokuBoard(
 							CellBox(
 								cell = cell,
 								index = i,
+								win = win,
 								selected = selectedCell.n == cell.n && highlightNumberEnabled,
 								onClick = {
 									onCellClicked(cell)
@@ -150,6 +153,7 @@ fun SudokuBoard(
 							CellBox(
 								cell = cell,
 								index = i,
+								win = win,
 								selected = selectedCell.n == cell.n && highlightNumberEnabled,
 								onClick = {
 									onCellClicked(cell)
@@ -171,6 +175,7 @@ fun SudokuBoard(
 private fun CellBox(
 	cell: Cell,
 	index: Int,
+	win: Boolean,
 	selected: Boolean,
 	modifier: Modifier = Modifier,
 	onClick: () -> Unit
@@ -178,11 +183,13 @@ private fun CellBox(
 	
 	val cellBackground by animateColorAsState(
 		animationSpec = tween(300),
-		targetValue = if (selected) MaterialTheme.colorScheme.primary
-		else {
-			if (cell.missingNum) MaterialTheme.colorScheme.background
-			else MaterialTheme.colorScheme.surfaceVariant
-		}
+		targetValue = if (!win) {
+			if (selected) MaterialTheme.colorScheme.primary
+			else {
+				if (cell.missingNum) MaterialTheme.colorScheme.background
+				else MaterialTheme.colorScheme.surfaceVariant
+			}
+		} else MaterialTheme.colorScheme.background
 	)
 	
 	Box(modifier = modifier) {
@@ -222,7 +229,10 @@ private fun CellBox(
 					top = if (index in 6..8) 1.dp else 0.dp
 				)
 				.fillMaxSize()
-				.clickable(onClick = onClick)
+				.clickable(
+					enabled = !win,
+					onClick = onClick
+				)
 				.padding(3.dp)
 				.drawBehind {
 					drawCircle(
@@ -248,7 +258,7 @@ private fun CellBox(
 					Text(
 						text = if (n != 0) n.toString() else "",
 						style = LocalTextStyle.current.copy(
-							color = if (selected) Color.White else Color.Black
+							color = if (selected && !win) Color.White else Color.Black
 						)
 					)
 				} else {

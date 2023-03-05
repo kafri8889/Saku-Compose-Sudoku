@@ -15,9 +15,12 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -33,8 +36,13 @@ import com.anafthdev.saku.extension.iconIdToSudokuGameAction
 fun SudokuGameAction(
 	selected: SudokuGameAction,
 	modifier: Modifier = Modifier,
+	enabled: Boolean = true,
 	onClick: (SudokuGameAction) -> Unit
 ) {
+	
+	val alpha = remember (enabled) {
+		if (enabled) 1f else 0.32f
+	}
 
 	BoxWithConstraints {
 		val chipWidth = maxWidth / (SudokuGameActionDefaults.actions.size + 1)
@@ -45,7 +53,7 @@ fun SudokuGameAction(
 		) {
 			SudokuGameActionDefaults.actions.forEach { (iconId, _) ->
 				val backgroundColor by animateColorAsState(
-					targetValue = if (selected.iconId == iconId) MaterialTheme.colorScheme.primary
+					targetValue = if (selected.iconId == iconId && enabled) MaterialTheme.colorScheme.primary
 					else MaterialTheme.colorScheme.background,
 					animationSpec = tween(500)
 				)
@@ -59,18 +67,27 @@ fun SudokuGameAction(
 						.clip(RoundedCornerShape(25))
 						.border(
 							width = 1.dp,
-							color = MaterialTheme.colorScheme.outline,
+							color = MaterialTheme.colorScheme.outline.copy(alpha = alpha),
 							shape = RoundedCornerShape(25)
 						)
 						.drawBehind {
 							drawRect(backgroundColor)
 						}
-						.clickable { onClick(iconIdToSudokuGameAction(iconId)) }
+						.clickable(
+							enabled = enabled,
+							onClick = {
+								onClick(iconIdToSudokuGameAction(iconId))
+							}
+						)
 				) {
-					Icon(
-						painter = painterResource(id = iconId),
-						contentDescription = null
-					)
+					CompositionLocalProvider(
+						LocalContentColor provides LocalContentColor.current.copy(alpha = alpha)
+					) {
+						Icon(
+							painter = painterResource(id = iconId),
+							contentDescription = null
+						)
+					}
 				}
 			}
 		}

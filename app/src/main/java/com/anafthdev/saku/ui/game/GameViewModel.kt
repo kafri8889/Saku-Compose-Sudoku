@@ -121,6 +121,9 @@ class GameViewModel @Inject constructor(
 				println("win: $mWin")
 				
 				win = mWin
+				
+				if (win) countUpTimer.cancel()
+				else countUpTimer.start()
 			}
 		}
 		

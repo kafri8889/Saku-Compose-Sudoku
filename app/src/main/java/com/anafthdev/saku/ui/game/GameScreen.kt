@@ -2,9 +2,12 @@ package com.anafthdev.saku.ui.game
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -151,6 +154,7 @@ fun GameContent(
 				minute = viewModel.minute,
 				second = viewModel.second,
 				hours = viewModel.hours,
+				win = viewModel.win,
 				difficulty = viewModel.difficulty,
 				onPause = onPause
 			)
@@ -159,6 +163,7 @@ fun GameContent(
 		item {
 			SudokuBoard(
 				cells = viewModel.board,
+				win = viewModel.win,
 				selectedCell = viewModel.selectedCell,
 				onCellClicked = viewModel::updateBoard,
 				highlightNumberEnabled = viewModel.highlightNumberEnabled,
@@ -173,6 +178,7 @@ fun GameContent(
 				contentAlignment = Alignment.Center
 			) {
 				NumberPad(
+					enabled = !viewModel.win,
 					selectedNumber = viewModel.selectedNumber,
 					remainingNumbers = viewModel.remainingNumbers,
 					showRemainingNumber = viewModel.remainingNumberEnabled,
@@ -188,6 +194,7 @@ fun GameContent(
 				contentAlignment = Alignment.Center
 			) {
 				SudokuGameAction(
+					enabled = !viewModel.win,
 					selected = viewModel.selectedGameAction,
 					onClick = { action ->
 						if (action in SudokuGameActionDefaults.selectableActions) {
@@ -212,16 +219,19 @@ fun GameContent(
 	}
 }
 
+@OptIn(ExperimentalAnimationApi::class)
 @Composable
 private fun GameScreenHeader(
 	minute: Int,
 	second: Int,
 	hours: Int,
+	win: Boolean,
 	difficulty: Difficulty,
+	modifier: Modifier = Modifier,
 	onPause: () -> Unit
 ) {
 	
-	Row {
+	Row(modifier = modifier) {
 		Column {
 			AnimatedTextByChar(
 				text = "${hourMinuteFormat(hours)}:${hourMinuteFormat(minute)}:${hourMinuteFormat(second)}",
@@ -241,11 +251,21 @@ private fun GameScreenHeader(
 		
 		Spacer(modifier = Modifier.weight(1f))
 		
-		IconButton(onClick = onPause) {
-			Icon(
-				painter = painterResource(id = R.drawable.ic_pause),
-				contentDescription = null
+		AnimatedVisibility(
+			visible = !win,
+			enter = scaleIn(
+				tween(1400)
+			),
+			exit = scaleOut(
+				tween(1400)
 			)
+		) {
+			IconButton(onClick = onPause) {
+				Icon(
+					painter = painterResource(id = R.drawable.ic_pause),
+					contentDescription = null
+				)
+			}
 		}
 	}
 }

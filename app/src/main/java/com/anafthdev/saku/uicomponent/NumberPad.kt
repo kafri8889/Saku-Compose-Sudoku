@@ -16,6 +16,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -33,6 +34,7 @@ fun NumberPad(
 	remainingNumbers: List<RemainingNumber>,
 	showRemainingNumber: Boolean,
 	modifier: Modifier = Modifier,
+	enabled: Boolean = true,
 	onNumberSelected: (Int) -> Unit
 ) {
 	
@@ -47,9 +49,13 @@ fun NumberPad(
 			val selected = selectedNumber == i
 			
 			val backgroundColor by animateColorAsState(
-				targetValue = if (selected) MaterialTheme.colorScheme.primary else Color.Transparent,
+				targetValue = if (selected && enabled) MaterialTheme.colorScheme.primary else Color.Transparent,
 				animationSpec = tween(500)
 			)
+			
+			val alpha = remember (enabled) {
+				if (enabled) 1f else 0.32f
+			}
 			
 			Box(
 				contentAlignment = Alignment.Center,
@@ -63,9 +69,15 @@ fun NumberPad(
 					.border(
 						width = 1.dp,
 						shape = RoundedCornerShape(25),
-						color = if (!selected) MaterialTheme.colorScheme.outline else Color.Transparent
+						color = if (!selected or !enabled) MaterialTheme.colorScheme.outline.copy(alpha = alpha)
+						else Color.Transparent
 					)
-					.clickable { onNumberSelected(i) }
+					.clickable(
+						enabled = enabled,
+						onClick = {
+							onNumberSelected(i)
+						}
+					)
 			) {
 				Column(
 					horizontalAlignment = Alignment.CenterHorizontally
@@ -73,8 +85,8 @@ fun NumberPad(
 					AutoResizeText(
 						text = i.toString(),
 						style = MaterialTheme.typography.bodyMedium.copy(
-							color = if (selected) MaterialTheme.colorScheme.background
-							else MaterialTheme.colorScheme.onBackground
+							color = if (selected && enabled) MaterialTheme.colorScheme.background
+							else MaterialTheme.colorScheme.onBackground.copy(alpha = alpha)
 						)
 					)
 					
@@ -89,7 +101,7 @@ fun NumberPad(
 							text = remainingNumber,
 							style = MaterialTheme.typography.labelSmall.copy(
 								color = if (selected) Color.LightGray
-								else Color.Gray
+								else Color.Gray.copy(alpha = alpha)
 							)
 						)
 					}
