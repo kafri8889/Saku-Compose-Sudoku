@@ -10,19 +10,19 @@ object ScoreDataProvider {
 			id = 0,
 			date = System.currentTimeMillis(),
 			time = 3630,
-			difficulty = Difficulty.Easy.ordinal
+			difficulty = Difficulty.Easy
 		),
 		Score(
 			id = 1,
 			date = System.currentTimeMillis(),
 			time = 6,
-			difficulty = Difficulty.Evil.ordinal
+			difficulty = Difficulty.Evil
 		),
 		Score(
 			id = 2,
 			date = System.currentTimeMillis(),
 			time = 85,
-			difficulty = Difficulty.Normal.ordinal
+			difficulty = Difficulty.Normal
 		),
 	)
 	

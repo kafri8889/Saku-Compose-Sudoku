@@ -14,9 +14,5 @@ data class Score(
 	 * In second
 	 */
 	@ColumnInfo(name = "time_score") val time: Int,
-	
-	/**
-	 * [Difficulty] ordinal
-	 */
-	@ColumnInfo(name = "difficulty_score") val difficulty: Int,
+	@ColumnInfo(name = "difficulty_score") val difficulty: Difficulty,
 )
