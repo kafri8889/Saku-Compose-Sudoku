@@ -77,6 +77,8 @@ fun DashboardScreen(
 			confirmButton = {
 				Button(
 					onClick = {
+						viewModel.updateShowNewGameDialog(false)
+						
 						navController.navigate(
 							SakuDestination.Game.Home.createRoute(
 								mode = viewModel.selectedDifficulty.ordinal
@@ -152,6 +154,8 @@ fun DashboardScreen(
 			
 			OutlinedButton(
 				onClick = {
+					viewModel.updateShowNewGameDialog(false)
+					
 					navController.navigate(
 						SakuDestination.Game.Home.createRoute(
 							mode = -1,
