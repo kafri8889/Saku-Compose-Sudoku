@@ -73,6 +73,7 @@ fun GameScreen(
 	
 	BackHandler {
 		viewModel.exit()
+		viewModel.resetTimer()
 		navController.popBackStack()
 	}
 	

@@ -10,6 +10,14 @@ class UserPreferencesRepository @Inject constructor(
 	private val userPreferencesDataStore: DataStore<UserPreferences>
 ) {
 	
+	suspend fun setTime(seconds: Int) {
+		userPreferencesDataStore.updateData { currentPreferences ->
+			currentPreferences.copy(
+				time = seconds
+			)
+		}
+	}
+	
 	suspend fun setGameMode(ordinal: Int) {
 		userPreferencesDataStore.updateData { currentPreferences ->
 			currentPreferences.copy(

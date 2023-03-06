@@ -88,10 +88,12 @@ class GameViewModel @Inject constructor(
 					highlightNumberEnabled = preferences.highlightNumberEnabled
 					
 					if (use and !hasWin) {
+						second = preferences.time
 						difficulty = Difficulty.values()[preferences.gameMode]
 						
 						withContext(Dispatchers.IO) {
 							if (preferences.boardState.isNotBlank() and preferences.solvedBoardState.isNotBlank()) {
+								countUpTimer.snapTo(preferences.time)
 								gameEngine.init(
 									preferences.boardState,
 									preferences.solvedBoardState
@@ -241,17 +243,24 @@ class GameViewModel @Inject constructor(
 		gameEngine.resume()
 	}
 	
+	fun resetTimer() {
+		viewModelScope.launch {
+			countUpTimer.reset()
+		}
+	}
+	
 	fun exit() {
 		Timber.i("exit koll")
 		pause()
 		viewModelScope.launch {
-			countUpTimer.reset()
 			userPreferencesRepository.apply {
 				if (win) {
+					setTime(0)
 					setGameMode(0)
 					setBoardState("")
 					setSolvedBoardState("")
 				} else {
+					setTime(second)
 					setGameMode(difficulty.ordinal)
 					setBoardState(gameEngine.getBoardStateInJson())
 					setSolvedBoardState(gameEngine.getSolvedBoardStateInJson())

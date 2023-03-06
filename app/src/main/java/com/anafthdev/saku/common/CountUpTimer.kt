@@ -18,6 +18,10 @@ class CountUpTimer @Inject constructor() {
 	private val _second = MutableStateFlow(0)
 	val second: StateFlow<Int> = _second
 	
+	suspend fun snapTo(sec: Int) {
+		_second.emit(sec)
+	}
+	
 	suspend fun reset() {
 		_second.emit(0)
 	}
