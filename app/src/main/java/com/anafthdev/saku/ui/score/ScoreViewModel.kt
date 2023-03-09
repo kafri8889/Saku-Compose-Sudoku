@@ -35,6 +35,12 @@ class ScoreViewModel @Inject constructor(
 		}
 	}
 	
+	fun deleteScore(score: Score) {
+		viewModelScope.launch(Dispatchers.IO) {
+			scoreRepository.delete(score)
+		}
+	}
+	
 	fun formatDate(date: Long): String {
 		return dateFormatter.format(date)
 	}
