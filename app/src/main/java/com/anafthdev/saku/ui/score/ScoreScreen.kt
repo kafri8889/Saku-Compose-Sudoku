@@ -16,7 +16,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.anafthdev.saku.R
-import com.anafthdev.saku.data.local.database.ScoreDataProvider
 import com.anafthdev.saku.uicomponent.ScoreItem
 
 @Composable
@@ -44,7 +43,7 @@ fun ScoreScreen(
 				.fillMaxSize()
 				.systemBarsPadding()
 		) {
-			itemsIndexed(ScoreDataProvider.scores) { i, score ->
+			itemsIndexed(viewModel.scores) { i, score ->
 				ScoreItem(
 					index = i + 1,
 					score = score,

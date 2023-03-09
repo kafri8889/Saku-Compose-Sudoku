@@ -14,6 +14,8 @@ import com.anafthdev.saku.data.ARG_USE_LAST_BOARD
 import com.anafthdev.saku.data.Difficulty
 import com.anafthdev.saku.data.model.Cell
 import com.anafthdev.saku.data.model.RemainingNumber
+import com.anafthdev.saku.data.model.Score
+import com.anafthdev.saku.data.repository.ScoreRepository
 import com.anafthdev.saku.data.repository.UserPreferencesRepository
 import com.anafthdev.saku.uicomponent.SudokuGameAction
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -24,11 +26,13 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 import javax.inject.Inject
+import kotlin.random.Random
 
 @HiltViewModel
 class GameViewModel @Inject constructor(
 	private val gameEngine: GameEngine,
 	private val countUpTimer: CountUpTimer,
+	private val scoreRepository: ScoreRepository,
 	private val savedStateHandle: SavedStateHandle,
 	private val userPreferencesRepository: UserPreferencesRepository
 ): ViewModel() {
@@ -169,15 +173,39 @@ class GameViewModel @Inject constructor(
 	}
 	
 	override fun onCleared() {
-		exit()
+		saveState()
 		
 		super.onCleared()
 	}
 	
+	fun saveScore() {
+		val mSec = second
+		val mDifficulty = difficulty
+		
+		viewModelScope.launch(Dispatchers.IO) {
+			val score = Score(
+				id = Random.nextInt(),
+				date = System.currentTimeMillis(),
+				time = mSec,
+				difficulty = mDifficulty
+			)
+			
+			scoreRepository.insert(score)
+		}
+	}
+	
 	fun saveState() {
-		if (!hasWin) {
-			viewModelScope.launch(Dispatchers.IO) {
-				userPreferencesRepository.apply {
+		Timber.i("exit koll")
+		pause()
+		viewModelScope.launch {
+			userPreferencesRepository.apply {
+				if (win) {
+					setTime(0)
+					setGameMode(0)
+					setBoardState("")
+					setSolvedBoardState("")
+				} else {
+					setTime(second)
 					setGameMode(difficulty.ordinal)
 					setBoardState(gameEngine.getBoardStateInJson())
 					setSolvedBoardState(gameEngine.getSolvedBoardStateInJson())
@@ -246,26 +274,6 @@ class GameViewModel @Inject constructor(
 	fun resetTimer() {
 		viewModelScope.launch {
 			countUpTimer.reset()
-		}
-	}
-	
-	fun exit() {
-		Timber.i("exit koll")
-		pause()
-		viewModelScope.launch {
-			userPreferencesRepository.apply {
-				if (win) {
-					setTime(0)
-					setGameMode(0)
-					setBoardState("")
-					setSolvedBoardState("")
-				} else {
-					setTime(second)
-					setGameMode(difficulty.ordinal)
-					setBoardState(gameEngine.getBoardStateInJson())
-					setSolvedBoardState(gameEngine.getSolvedBoardStateInJson())
-				}
-			}
 		}
 	}
 	

@@ -66,13 +66,14 @@ fun GameScreen(
 	
 	LaunchedEffect(viewModel.win) {
 		if (viewModel.win) {
-			viewModel.exit()
+			viewModel.saveState()
+			viewModel.saveScore()
 			"Win".toast(context)
 		}
 	}
 	
 	BackHandler {
-		viewModel.exit()
+		viewModel.saveState()
 		viewModel.resetTimer()
 		navController.popBackStack()
 	}
