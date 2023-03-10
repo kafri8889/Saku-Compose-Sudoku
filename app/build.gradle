@@ -95,13 +95,13 @@ dependencies {
     implementation "androidx.hilt:hilt-navigation-compose:1.0.0"
 
     // Constraint layout
-    implementation "androidx.constraintlayout:constraintlayout-compose:1.1.0-alpha07"
+    implementation "androidx.constraintlayout:constraintlayout-compose:1.1.0-alpha08"
 
     // Material Design
     implementation 'com.google.android.material:material:1.8.0'
     implementation "androidx.compose.material:material:1.3.1"
     implementation "androidx.compose.material:material-icons-extended:1.3.1"
-    implementation "androidx.compose.material3:material3:1.1.0-alpha07"
+    implementation "androidx.compose.material3:material3:1.1.0-alpha08"
     implementation "androidx.compose.material3:material3-window-size-class:1.0.1"
 
     // Large screen support
@@ -117,14 +117,14 @@ dependencies {
 //    implementation  'com.google.protobuf:protobuf-kotlin-lite:3.19.1'
 
     // Lifecycle
-    implementation "androidx.lifecycle:lifecycle-runtime-compose:2.6.0-rc01"
-    implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.5.1"
-    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.5.1'
-    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1'
+    implementation "androidx.lifecycle:lifecycle-runtime-compose:2.6.0"
+    implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.6.0"
+    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.6.0'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.0'
     implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
     implementation 'androidx.core:core-ktx:1.9.0'
-    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1'
-    kapt 'androidx.lifecycle:lifecycle-common-java8:2.5.1'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.0'
+    kapt 'androidx.lifecycle:lifecycle-common-java8:2.6.0'
 
     // Dependency Injection
     implementation 'com.google.dagger:hilt-android:2.44.2'
