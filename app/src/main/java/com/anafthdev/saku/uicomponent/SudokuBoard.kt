@@ -59,15 +59,20 @@ fun SudokuBoard(
 	win: Boolean,
 	highlightNumberEnabled: Boolean,
 	modifier: Modifier = Modifier,
+	forPrint: Boolean = false,
 	shape: Shape = RoundedCornerShape(5),
 	onCellClicked: (Cell) -> Unit
 ) {
+	
+	val borderThickness = remember(forPrint) {
+		if (!forPrint) 1.dp else 2.dp
+	}
 
 	BoxWithConstraints(
 		modifier = modifier
 			.clip(shape)
 			.border(
-				width = 1.dp,
+				width = borderThickness,
 				color = Color.Black,
 				shape = shape
 			)
@@ -91,7 +96,7 @@ fun SudokuBoard(
 						modifier = Modifier
 							.size(gridCellSize)
 							.border(
-								width = 1.dp,
+								width = borderThickness,
 								color = Color.Black
 							)
 					) {
@@ -100,6 +105,7 @@ fun SudokuBoard(
 								cell = cell,
 								index = i,
 								win = win,
+								forPrint = forPrint,
 								selected = selectedCell.n == cell.n && highlightNumberEnabled,
 								onClick = {
 									onCellClicked(cell)
@@ -118,7 +124,7 @@ fun SudokuBoard(
 						modifier = Modifier
 							.size(gridCellSize)
 							.border(
-								width = 1.dp,
+								width = borderThickness,
 								color = Color.Black
 							)
 					) {
@@ -127,6 +133,7 @@ fun SudokuBoard(
 								cell = cell,
 								index = i,
 								win = win,
+								forPrint = forPrint,
 								selected = selectedCell.n == cell.n && highlightNumberEnabled,
 								onClick = {
 									onCellClicked(cell)
@@ -145,7 +152,7 @@ fun SudokuBoard(
 						modifier = Modifier
 							.size(gridCellSize)
 							.border(
-								width = 1.dp,
+								width = borderThickness,
 								color = Color.Black
 							)
 					) {
@@ -154,6 +161,7 @@ fun SudokuBoard(
 								cell = cell,
 								index = i,
 								win = win,
+								forPrint = forPrint,
 								selected = selectedCell.n == cell.n && highlightNumberEnabled,
 								onClick = {
 									onCellClicked(cell)
@@ -177,13 +185,20 @@ private fun CellBox(
 	index: Int,
 	win: Boolean,
 	selected: Boolean,
+	forPrint: Boolean,
 	modifier: Modifier = Modifier,
 	onClick: () -> Unit
 ) {
 	
+	val textStyle = if (!forPrint) LocalTextStyle.current else MaterialTheme.typography.headlineMedium
+	
+	val borderThickness = remember(forPrint) {
+		if (!forPrint) 1.dp else 1.4.dp
+	}
+	
 	val cellBackground by animateColorAsState(
 		animationSpec = tween(300),
-		targetValue = if (!win) {
+		targetValue = if (!win and !forPrint) {
 			if (selected) MaterialTheme.colorScheme.primary
 			else {
 				if (cell.missingNum) MaterialTheme.colorScheme.background
@@ -196,7 +211,7 @@ private fun CellBox(
 		if (index == 1 || index == 4 || index == 7) {
 			Box(
 				modifier = Modifier
-					.width(1.dp)
+					.width(borderThickness)
 					.fillMaxHeight(0.8f)
 					.background(
 						color = MaterialTheme.colorScheme.outline,
@@ -210,7 +225,7 @@ private fun CellBox(
 		if (index == 3 || index == 4 || index == 5) {
 			Box(
 				modifier = Modifier
-					.height(1.dp)
+					.height(borderThickness)
 					.fillMaxWidth(0.8f)
 					.background(
 						color = MaterialTheme.colorScheme.outline,
@@ -235,9 +250,11 @@ private fun CellBox(
 				)
 				.padding(3.dp)
 				.drawBehind {
-					drawCircle(
-						color = cellBackground
-					)
+					if (!forPrint) {
+						drawCircle(
+							color = cellBackground
+						)
+					}
 				}
 		) {
 			AnimatedContent(
@@ -257,7 +274,7 @@ private fun CellBox(
 				if (n != -1) {
 					Text(
 						text = if (n != 0) n.toString() else "",
-						style = LocalTextStyle.current.copy(
+						style = textStyle.copy(
 							color = if (selected && !win) Color.White else Color.Black
 						)
 					)
@@ -290,7 +307,7 @@ private fun CellBox(
 		if (index == 3 || index == 4 || index == 5) {
 			Box(
 				modifier = Modifier
-					.height(1.dp)
+					.height(borderThickness)
 					.fillMaxWidth(0.8f)
 					.background(
 						color = MaterialTheme.colorScheme.outline,
@@ -304,7 +321,7 @@ private fun CellBox(
 		if (index == 1 || index == 4 || index == 7) {
 			Box(
 				modifier = Modifier
-					.width(1.dp)
+					.width(borderThickness)
 					.fillMaxHeight(0.8f)
 					.background(
 						color = MaterialTheme.colorScheme.outline,

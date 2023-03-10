@@ -34,6 +34,14 @@ class UserPreferencesRepository @Inject constructor(
 		}
 	}
 	
+	suspend fun setExportBoardPath(path: String) {
+		userPreferencesDataStore.updateData { currentPreferences ->
+			currentPreferences.copy(
+				exportBoardPath = path
+			)
+		}
+	}
+	
 	suspend fun setSolvedBoardState(json: String) {
 		userPreferencesDataStore.updateData { currentPreferences ->
 			currentPreferences.copy(

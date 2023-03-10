@@ -77,6 +77,8 @@ class GameViewModel @Inject constructor(
 		private set
 	
 	val board = mutableStateListOf<Cell>()
+	val solvedBoard = mutableStateListOf<Cell>()
+	val initialBoard = mutableStateListOf<Cell>()
 	val remainingNumbers = mutableStateListOf<RemainingNumber>()
 	
 	init {
@@ -146,6 +148,28 @@ class GameViewModel @Inject constructor(
 				gameEngine.getRemainingNumber(mBoard)
 				
 				board.apply {
+					clear()
+					addAll(mBoard)
+				}
+				
+				if (gameEngine.currentBoard.replayCache.size < 3) {
+					initialBoard.apply {
+						clear()
+						addAll(
+							mBoard.map { parentCell ->
+								parentCell.copy(
+									subCells = parentCell.subCells.map { it.copy(n = if (it.missingNum) 0 else it.n) }
+								)
+							}
+						)
+					}
+				}
+			}
+		}
+		
+		viewModelScope.launch {
+			gameEngine.solvedBoard.collect { mBoard ->
+				solvedBoard.apply {
 					clear()
 					addAll(mBoard)
 				}

@@ -49,7 +49,40 @@ sealed class SakuDestination(val route: String) {
 		}
 	}
 	
+	class Sheet {
+		class Print {
+			object Root: SakuDestination("print/root")
+			object Home: SakuDestination(
+				route = "print/home?" +
+						"$ARG_INITIAL_BOARD={$ARG_INITIAL_BOARD}&" +
+						"$ARG_SOLVED_BOARD={$ARG_SOLVED_BOARD}"
+			) {
+				fun createRoute(
+					initialBoard: String,
+					solvedBoard: String
+				): String {
+					return "print/home?" +
+							"$ARG_INITIAL_BOARD=$initialBoard&" +
+							"$ARG_SOLVED_BOARD=$solvedBoard"
+				}
+				
+				val arguments = listOf(
+					navArgument(ARG_INITIAL_BOARD) {
+						type = NavType.StringType
+						defaultValue = ""
+					},
+					navArgument(ARG_SOLVED_BOARD) {
+						type = NavType.StringType
+						defaultValue = ""
+					}
+				)
+			}
+		}
+	}
+	
 }
 
 const val ARG_GAME_MODE = "game_mode"
 const val ARG_USE_LAST_BOARD = "use_last_board"
+const val ARG_INITIAL_BOARD = "initial_board"
+const val ARG_SOLVED_BOARD = "solved_board"

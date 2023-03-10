@@ -27,7 +27,13 @@ class GameEngine @Inject constructor(
 	private val sudoku: Sudoku = Sudoku()
 	private var listener: EngineListener? = null
 	
-	private val solvedBoard: ArrayList<Cell> = arrayListOf()
+	private val mSolvedBoard: ArrayList<Cell> = arrayListOf()
+	
+	private val _solvedBoard = MutableSharedFlow<List<Cell>>(
+		replay = 1,
+		onBufferOverflow = BufferOverflow.DROP_OLDEST
+	)
+	val solvedBoard: SharedFlow<List<Cell>> = _solvedBoard
 	
 	private val _currentBoard = MutableSharedFlow<List<Cell>>(
 		replay = 1,
@@ -49,9 +55,15 @@ class GameEngine @Inject constructor(
 	init {
 		sudoku.setListener(object : Sudoku.SudokuListener {
 			override fun onSolvedBoardCreated(board: Array<IntArray>) {
-				solvedBoard.apply {
+				val mBoard = toCellBoard(board)
+				
+				mSolvedBoard.apply {
 					clear()
-					addAll(toCellBoard(board))
+					addAll(mBoard)
+				}
+				
+				CoroutineScope(Dispatchers.IO).launch {
+					_solvedBoard.emit(mBoard)
 				}
 			}
 		})
@@ -127,7 +139,7 @@ class GameEngine @Inject constructor(
 		return mBoard
 	}
 	
-	private fun boardFromJson(json: String): List<Cell> {
+	fun boardFromJson(json: String): List<Cell> {
 		return if (json.isBlank()) emptyList() else gson.fromJson(json, Array<Cell>::class.java).toList()
 	}
 	
@@ -151,11 +163,12 @@ class GameEngine @Inject constructor(
 		val parsedBoard = boardFromJson(boardJson)
 		val parsedSolvedBoard = boardFromJson(solvedBoardJson)
 		
-		solvedBoard.apply {
+		mSolvedBoard.apply {
 			clear()
 			addAll(parsedSolvedBoard)
 		}
 		
+		_solvedBoard.emit(parsedSolvedBoard)
 		_currentBoard.emit(parsedBoard)
 		
 		getRemainingNumber(parsedBoard)
@@ -268,7 +281,7 @@ class GameEngine @Inject constructor(
 		
 		for (i in 0 until 9) {
 			for (j in 0 until 9) {
-				win = board[i].subCells[j].n == solvedBoard[i].subCells[j].n
+				win = board[i].subCells[j].n == mSolvedBoard[i].subCells[j].n
 				
 				if (!win) return false
 			}
@@ -288,7 +301,7 @@ class GameEngine @Inject constructor(
 	}
 	
 	fun getSolvedBoardStateInJson(): String {
-		val solvedBoardJson = Gson().toJson(solvedBoard)
+		val solvedBoardJson = Gson().toJson(mSolvedBoard)
 		
 		println("solved board json: $solvedBoardJson")
 		
@@ -304,7 +317,7 @@ class GameEngine @Inject constructor(
 	}
 	
 	suspend fun solve() {
-		_currentBoard.emit(solvedBoard)
+		_currentBoard.emit(mSolvedBoard)
 	}
 	
 	fun pause() {

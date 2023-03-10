@@ -19,4 +19,7 @@
     <string name="time">Time</string>
     <string name="difficulty">Difficulty</string>
     <string name="you_have_no_game_history">You have no game history</string>
+    <string name="include_solved_board">Include solved board</string>
+    <string name="export_as_pdf">Export as pdf</string>
+    <string name="export_successful">Export successful</string>
 </resources>

@@ -4,10 +4,11 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.tween
+import androidx.compose.animation.expandHorizontally
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
+import androidx.compose.animation.shrinkHorizontally
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -44,6 +45,7 @@ import androidx.navigation.NavController
 import com.anafthdev.saku.R
 import com.anafthdev.saku.component.ObserveLifecycle
 import com.anafthdev.saku.data.Difficulty
+import com.anafthdev.saku.data.SakuDestination
 import com.anafthdev.saku.extension.hourMinuteFormat
 import com.anafthdev.saku.extension.toast
 import com.anafthdev.saku.uicomponent.AnimatedTextByChar
@@ -52,6 +54,7 @@ import com.anafthdev.saku.uicomponent.SakuDialog
 import com.anafthdev.saku.uicomponent.SudokuBoard
 import com.anafthdev.saku.uicomponent.SudokuGameAction
 import com.anafthdev.saku.uicomponent.SudokuGameActionDefaults
+import com.google.gson.Gson
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -136,6 +139,14 @@ fun GameScreen(
 		onPause = {
 			viewModel.pause()
 			isPaused = true
+		},
+		onPrint = {
+			val boardJson = Gson().toJson(viewModel.initialBoard)
+			val solvedBoardJson = Gson().toJson(viewModel.solvedBoard)
+			
+			navController.navigate(
+				SakuDestination.Sheet.Print.Home.createRoute(boardJson, solvedBoardJson)
+			)
 		}
 	)
 }
@@ -143,7 +154,8 @@ fun GameScreen(
 @Composable
 fun GameContent(
 	viewModel: GameViewModel,
-	onPause: () -> Unit
+	onPause: () -> Unit,
+	onPrint: () -> Unit
 ) {
 	LazyColumn(
 		verticalArrangement = Arrangement.SpaceBetween,
@@ -159,7 +171,8 @@ fun GameContent(
 				hours = viewModel.hours,
 				win = viewModel.win,
 				difficulty = viewModel.difficulty,
-				onPause = onPause
+				onPause = onPause,
+				onPrint = onPrint
 			)
 		}
 		
@@ -231,7 +244,8 @@ private fun GameScreenHeader(
 	win: Boolean,
 	difficulty: Difficulty,
 	modifier: Modifier = Modifier,
-	onPause: () -> Unit
+	onPause: () -> Unit,
+	onPrint: () -> Unit
 ) {
 	
 	Row(modifier = modifier) {
@@ -254,14 +268,21 @@ private fun GameScreenHeader(
 		
 		Spacer(modifier = Modifier.weight(1f))
 		
+		IconButton(onClick = onPrint) {
+			Icon(
+				painter = painterResource(id = R.drawable.ic_printer),
+				contentDescription = null
+			)
+		}
+		
 		AnimatedVisibility(
 			visible = !win,
-			enter = scaleIn(
-				tween(1400)
+			enter = expandHorizontally(
+				animationSpec = tween(800)
 			),
-			exit = scaleOut(
-				tween(1400)
-			)
+			exit = shrinkHorizontally(
+				animationSpec = tween(800)
+			) + scaleOut()
 		) {
 			IconButton(onClick = onPause) {
 				Icon(

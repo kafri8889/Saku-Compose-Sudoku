@@ -6,7 +6,8 @@ message UserPreferences {
   int32 time = 1;
   int32 gameMode = 2;
   string boardState = 3;
-  string solvedBoardState = 4;
-  bool highlightNumberEnabled = 5;
-  bool remainingNumberEnabled = 6;
+  string exportBoardPath = 4;
+  string solvedBoardState = 5;
+  bool highlightNumberEnabled = 6;
+  bool remainingNumberEnabled = 7;
 }
