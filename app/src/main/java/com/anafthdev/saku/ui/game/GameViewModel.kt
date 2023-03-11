@@ -261,14 +261,15 @@ class GameViewModel @Inject constructor(
 	}
 	
 	fun updateBoard(cell: Cell) {
+		Timber.i("cell: $cell")
 		viewModelScope.launch {
 			if (cell.missingNum) {
 				lastUpdatedCell = cell
 				gameEngine.updateBoard(cell, selectedNumber, selectedGameAction)
 			}
 			
-			if (cell.n != 0) {
-				selectedCell = cell
+			if (cell.n > 0) {
+				selectedCell = Cell(selectedNumber)
 			}
 		}
 	}

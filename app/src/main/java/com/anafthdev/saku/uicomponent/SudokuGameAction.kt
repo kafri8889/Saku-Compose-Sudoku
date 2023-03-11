@@ -25,6 +25,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.anafthdev.saku.R
@@ -81,7 +82,8 @@ fun SudokuGameAction(
 						)
 				) {
 					CompositionLocalProvider(
-						LocalContentColor provides LocalContentColor.current.copy(alpha = alpha)
+						LocalContentColor provides if (selected.iconId == iconId) Color.White.copy(alpha = alpha)
+						else LocalContentColor.current.copy(alpha = alpha)
 					) {
 						Icon(
 							painter = painterResource(id = iconId),

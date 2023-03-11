@@ -106,7 +106,7 @@ fun SudokuBoard(
 								index = i,
 								win = win,
 								forPrint = forPrint,
-								selected = selectedCell.n == cell.n && highlightNumberEnabled,
+								selected = selectedCell.n == cell.n && selectedCell.n != -1 && highlightNumberEnabled,
 								onClick = {
 									onCellClicked(cell)
 								},
@@ -134,7 +134,7 @@ fun SudokuBoard(
 								index = i,
 								win = win,
 								forPrint = forPrint,
-								selected = selectedCell.n == cell.n && highlightNumberEnabled,
+								selected = selectedCell.n == cell.n && selectedCell.n != -1 && highlightNumberEnabled,
 								onClick = {
 									onCellClicked(cell)
 								},
@@ -162,7 +162,7 @@ fun SudokuBoard(
 								index = i,
 								win = win,
 								forPrint = forPrint,
-								selected = selectedCell.n == cell.n && highlightNumberEnabled,
+								selected = selectedCell.n == cell.n && selectedCell.n != -1 && highlightNumberEnabled,
 								onClick = {
 									onCellClicked(cell)
 								},
