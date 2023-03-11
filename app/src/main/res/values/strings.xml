@@ -24,4 +24,6 @@
     <string name="export_successful">Export successful</string>
     <string name="finish_game_msg">Are you sure you want to finish this game (the score won\'t be recorded)?</string>
     <string name="yes">Yes</string>
+    <string name="delete">Delete</string>
+    <string name="delete_score_msg">Are you sure you want to delete this score?</string>
 </resources>

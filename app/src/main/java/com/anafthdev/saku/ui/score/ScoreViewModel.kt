@@ -1,7 +1,10 @@
 package com.anafthdev.saku.ui.score
 
 import android.icu.text.DateFormat
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.anafthdev.saku.data.model.Score
@@ -19,6 +22,9 @@ class ScoreViewModel @Inject constructor(
 	
 	private val dateFormatter = DateFormat.getDateInstance(DateFormat.SHORT)
 	
+	var scoreToDelete by mutableStateOf<Score?>(null)
+		private set
+	
 	var scores = mutableStateListOf<Score>()
 		private set
 	
@@ -35,7 +41,12 @@ class ScoreViewModel @Inject constructor(
 		}
 	}
 	
-	fun deleteScore(score: Score) {
+	fun updateScoreToDelete(score: Score?) {
+		scoreToDelete = score
+	}
+	
+	fun deleteSelectedScore() {
+		val score = scoreToDelete!!
 		viewModelScope.launch(Dispatchers.IO) {
 			scoreRepository.delete(score)
 		}
