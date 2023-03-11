@@ -5,6 +5,7 @@ import android.database.Cursor
 import android.net.Uri
 import android.os.Environment
 import android.provider.DocumentsContract
+import timber.log.Timber
 
 object UriUtils {
 	
@@ -12,10 +13,13 @@ object UriUtils {
 		if (isExternalStorageDocument(uri)) {
 			val docId = DocumentsContract.getTreeDocumentId(uri)
 			val split = docId.split(":".toRegex()).toTypedArray()
+			
+			Timber.i("split: ${split.contentDeepToString()}")
+			
 			val type = split[0]
-			if ("primary".equals(type, ignoreCase = true)) {
-				return Environment.getExternalStorageDirectory().toString() + "/" + split[1]
-			}
+			return if ("primary".equals(type, ignoreCase = true)) {
+				Environment.getExternalStorageDirectory().toString() + "/" + split[1]
+			} else "sdcard/${split[1]}"
 		}
 		
 		return null
