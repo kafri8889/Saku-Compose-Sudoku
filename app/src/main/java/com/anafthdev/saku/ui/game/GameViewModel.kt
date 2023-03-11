@@ -7,6 +7,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.anafthdev.saku.UserPreferences
 import com.anafthdev.saku.common.CountUpTimer
 import com.anafthdev.saku.common.GameEngine
 import com.anafthdev.saku.data.ARG_GAME_MODE
@@ -40,6 +41,7 @@ class GameViewModel @Inject constructor(
 	private val deliveredGameMode: StateFlow<Int> = savedStateHandle.getStateFlow(ARG_GAME_MODE, -1)
 	private val useLastBoardState: StateFlow<Boolean> = savedStateHandle.getStateFlow(ARG_USE_LAST_BOARD, false)
 	
+	private var userPreferences = UserPreferences()
 	private var lastUpdatedCell = Cell.NULL
 	private var hasWin = false
 	
@@ -90,6 +92,7 @@ class GameViewModel @Inject constructor(
 				preferences to use
 			}.collect { (preferences, use) ->
 				withContext(Dispatchers.Main) {
+					userPreferences = preferences
 					remainingNumberEnabled = preferences.remainingNumberEnabled
 					highlightNumberEnabled = preferences.highlightNumberEnabled
 					
@@ -224,15 +227,28 @@ class GameViewModel @Inject constructor(
 		viewModelScope.launch {
 			userPreferencesRepository.apply {
 				if (win) {
-					setTime(0)
-					setGameMode(0)
-					setBoardState("")
-					setSolvedBoardState("")
+					update(
+						pref = userPreferences.copy(
+							time = 0,
+							gameMode = 0,
+							boardState = "",
+							solvedBoardState = ""
+						)
+					)
 				} else {
-					setTime(second)
-					setGameMode(difficulty.ordinal)
-					setBoardState(gameEngine.getBoardStateInJson())
-					setSolvedBoardState(gameEngine.getSolvedBoardStateInJson())
+					Timber.i("seffffff")
+					
+					val boardState = gameEngine.getBoardStateInJson()
+					val solvedBoardState = gameEngine.getSolvedBoardStateInJson()
+					
+					update(
+						pref = userPreferences.copy(
+							time = second,
+							gameMode = difficulty.ordinal,
+							boardState = boardState,
+							solvedBoardState = solvedBoardState
+						)
+					)
 				}
 			}
 		}

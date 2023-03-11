@@ -76,6 +76,7 @@ fun DashboardScreen(
 				Button(
 					onClick = {
 						viewModel.updateShowNewGameDialog(false)
+						viewModel.resetState()
 						
 						navController.navigate(
 							SakuDestination.Game.Home.createRoute(

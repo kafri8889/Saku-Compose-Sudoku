@@ -6,6 +6,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.anafthdev.saku.UserPreferences
+import com.anafthdev.saku.common.CountUpTimer
 import com.anafthdev.saku.data.Difficulty
 import com.anafthdev.saku.data.repository.UserPreferencesRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -15,7 +16,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class DashboardViewModel @Inject constructor(
-	private val userPreferencesRepository: UserPreferencesRepository
+	private val userPreferencesRepository: UserPreferencesRepository,
+	private val countUpTimer: CountUpTimer
 ): ViewModel() {
 	
 	var canResume by mutableStateOf(false)
@@ -50,5 +52,19 @@ class DashboardViewModel @Inject constructor(
 	
 	fun updateShowNewGameDialog(show: Boolean) {
 		showNewGameDialog = show
+	}
+	
+	fun resetState() {
+		viewModelScope.launch {
+			countUpTimer.reset()
+			userPreferencesRepository.update(
+				pref = userPreferences.copy(
+					time = 0,
+					gameMode = 0,
+					boardState = "",
+					solvedBoardState = ""
+				)
+			)
+		}
 	}
 }

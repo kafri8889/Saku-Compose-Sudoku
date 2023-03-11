@@ -42,7 +42,7 @@ fun ScoreScreen(
 				.fillMaxSize()
 		) {
 			Text(
-				text = stringResource(R.string.you_have_no_game_history),
+				text = stringResource(R.string.you_dont_have_a_game_history),
 				style = MaterialTheme.typography.titleMedium.copy(
 					fontWeight = FontWeight.Medium
 				)

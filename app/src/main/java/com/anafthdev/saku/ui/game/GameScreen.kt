@@ -121,6 +121,8 @@ fun GameScreen(
 			dismissButton = {
 				TextButton(
 					onClick = {
+						viewModel.saveState()
+						
 						isPaused = false
 						
 						navController.popBackStack()
