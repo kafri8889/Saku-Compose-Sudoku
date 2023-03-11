@@ -26,4 +26,5 @@
     <string name="yes">Yes</string>
     <string name="delete">Delete</string>
     <string name="delete_score_msg">Are you sure you want to delete this score?</string>
+    <string name="activity_not_found_exception_msg">You probably don\'t have the right application to look at these content</string>
 </resources>

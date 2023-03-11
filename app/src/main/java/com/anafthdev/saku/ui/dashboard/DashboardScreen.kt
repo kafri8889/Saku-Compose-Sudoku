@@ -1,5 +1,6 @@
 package com.anafthdev.saku.ui.dashboard
 
+import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.net.Uri
 import androidx.compose.animation.AnimatedVisibility
@@ -42,6 +43,7 @@ import androidx.navigation.NavController
 import com.anafthdev.saku.R
 import com.anafthdev.saku.data.Difficulty
 import com.anafthdev.saku.data.SakuDestination
+import com.anafthdev.saku.extension.toast
 import com.anafthdev.saku.uicomponent.DifficultySelector
 import com.anafthdev.saku.uicomponent.SakuDialog
 
@@ -196,12 +198,16 @@ fun DashboardScreen(
 			
 			IconButton(
 				onClick = {
-					context.startActivity(
-						Intent(Intent.ACTION_VIEW).apply {
-							flags = Intent.FLAG_ACTIVITY_NEW_TASK
-							data = Uri.parse("https://github.com/kafri8889/Saku-Compose-Sudoku")
-						}
-					)
+					try {
+						context.startActivity(
+							Intent(Intent.ACTION_VIEW).apply {
+								flags = Intent.FLAG_ACTIVITY_NEW_TASK
+								data = Uri.parse("https://github.com/kafri8889/Saku-Compose-Sudoku")
+							}
+						)
+					} catch (e: ActivityNotFoundException) {
+						context.getString(R.string.activity_not_found_exception_msg).toast(context)
+					}
 				}
 			) {
 				Icon(
