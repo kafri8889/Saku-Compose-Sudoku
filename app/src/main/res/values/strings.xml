@@ -22,4 +22,6 @@
     <string name="include_solved_board">Include solved board</string>
     <string name="export_as_pdf">Export as pdf</string>
     <string name="export_successful">Export successful</string>
+    <string name="finish_game_msg">Are you sure you want to finish this game (the score won\'t be recorded)?</string>
+    <string name="yes">Yes</string>
 </resources>

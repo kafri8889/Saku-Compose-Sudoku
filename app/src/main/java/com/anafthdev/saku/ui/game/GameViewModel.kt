@@ -43,6 +43,7 @@ class GameViewModel @Inject constructor(
 	
 	private var userPreferences = UserPreferences()
 	private var lastUpdatedCell = Cell.NULL
+	private var hasValidate = false
 	private var hasWin = false
 	
 	var selectedNumber by mutableStateOf(1)
@@ -64,6 +65,9 @@ class GameViewModel @Inject constructor(
 		private set
 	
 	var isPaused by mutableStateOf(false)
+		private set
+	
+	var showFinishGameDialog by mutableStateOf(false)
 		private set
 	
 	var win by mutableStateOf(false)
@@ -206,18 +210,20 @@ class GameViewModel @Inject constructor(
 	}
 	
 	fun saveScore() {
-		val mSec = second
-		val mDifficulty = difficulty
-		
-		viewModelScope.launch(Dispatchers.IO) {
-			val score = Score(
-				id = Random.nextInt(),
-				date = System.currentTimeMillis(),
-				time = mSec,
-				difficulty = mDifficulty
-			)
+		if (!hasValidate) {
+			val mSec = second
+			val mDifficulty = difficulty
 			
-			scoreRepository.insert(score)
+			viewModelScope.launch(Dispatchers.IO) {
+				val score = Score(
+					id = Random.nextInt(),
+					date = System.currentTimeMillis(),
+					time = mSec,
+					difficulty = mDifficulty
+				)
+				
+				scoreRepository.insert(score)
+			}
 		}
 	}
 	
@@ -226,7 +232,7 @@ class GameViewModel @Inject constructor(
 		pause()
 		viewModelScope.launch {
 			userPreferencesRepository.apply {
-				if (win) {
+				if (win or hasValidate) {
 					update(
 						pref = userPreferences.copy(
 							time = 0,
@@ -277,6 +283,14 @@ class GameViewModel @Inject constructor(
 		selectedCell = Cell(selectedNumber)
 	}
 	
+	fun updateIsPaused(paused: Boolean) {
+		isPaused = paused
+	}
+	
+	fun updateShowFinishGameDialog(show: Boolean) {
+		showFinishGameDialog = show
+	}
+	
 	fun updateSecond(s: Int) {
 		second = s
 	}
@@ -301,6 +315,14 @@ class GameViewModel @Inject constructor(
 		viewModelScope.launch {
 			gameEngine.solve()
 		}
+	}
+	
+	fun validate() {
+		hasValidate = true
+		win = true
+		
+		solve()
+		pause()
 	}
 	
 	fun pause() {

@@ -29,10 +29,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -40,6 +36,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.anafthdev.saku.R
@@ -65,8 +62,6 @@ fun GameScreen(
 	
 	val context = LocalContext.current
 	
-	var isPaused by remember { mutableStateOf(false) }
-	
 	LaunchedEffect(viewModel.win) {
 		if (viewModel.win) {
 			viewModel.saveState()
@@ -90,7 +85,7 @@ fun GameScreen(
 	)
 	
 	AnimatedVisibility(
-		visible = isPaused,
+		visible = viewModel.showFinishGameDialog,
 		enter = fadeIn(
 			animationSpec = tween(250)
 		),
@@ -101,16 +96,67 @@ fun GameScreen(
 		SakuDialog(
 			onDismissRequest = {
 				viewModel.resume()
-				isPaused = false
+				viewModel.updateShowFinishGameDialog(false)
 			},
 			text = {
-				Text(stringResource(R.string.game_paused))
+				Text(
+					text = stringResource(R.string.finish_game_msg),
+					textAlign = TextAlign.Center
+				)
 			},
 			confirmButton = {
 				Button(
 					onClick = {
 						viewModel.resume()
-						isPaused = false
+						viewModel.updateShowFinishGameDialog(false)
+						viewModel.validate()
+					},
+					modifier = Modifier
+						.fillMaxWidth()
+				) {
+					Text(stringResource(R.string.yes))
+				}
+			},
+			dismissButton = {
+				TextButton(
+					onClick = {
+						viewModel.updateShowFinishGameDialog(false)
+						viewModel.resume()
+					},
+					modifier = Modifier
+						.fillMaxWidth()
+				) {
+					Text(stringResource(id = R.string.cancel))
+				}
+			}
+		)
+	}
+	
+	AnimatedVisibility(
+		visible = viewModel.isPaused,
+		enter = fadeIn(
+			animationSpec = tween(250)
+		),
+		exit = fadeOut(
+			animationSpec = tween(250)
+		)
+	) {
+		SakuDialog(
+			onDismissRequest = {
+				viewModel.resume()
+				viewModel.updateIsPaused(false)
+			},
+			text = {
+				Text(
+					text = stringResource(R.string.game_paused),
+					textAlign = TextAlign.Center
+				)
+			},
+			confirmButton = {
+				Button(
+					onClick = {
+						viewModel.resume()
+						viewModel.updateIsPaused(false)
 					},
 					modifier = Modifier
 						.fillMaxWidth()
@@ -123,7 +169,7 @@ fun GameScreen(
 					onClick = {
 						viewModel.saveState()
 						
-						isPaused = false
+						viewModel.updateIsPaused(false)
 						
 						navController.popBackStack()
 					},
@@ -138,9 +184,27 @@ fun GameScreen(
 	
 	GameContent(
 		viewModel = viewModel,
+		onActionClicked = { action ->
+			if (action in SudokuGameActionDefaults.selectableActions) {
+				viewModel.updateSelectedGameAction(
+					if (viewModel.selectedGameAction == action) SudokuGameAction.None
+					else action
+				)
+			} else {
+				when (action) {
+					SudokuGameAction.Undo -> viewModel.undo()
+					SudokuGameAction.Redo -> viewModel.redo()
+					SudokuGameAction.Validate -> {
+						viewModel.pause()
+						viewModel.updateShowFinishGameDialog(true)
+					}
+					else -> {}
+				}
+			}
+		},
 		onPause = {
 			viewModel.pause()
-			isPaused = true
+			viewModel.updateIsPaused(true)
 		},
 		onPrint = {
 			val boardJson = Gson().toJson(viewModel.initialBoard)
@@ -156,6 +220,7 @@ fun GameScreen(
 @Composable
 fun GameContent(
 	viewModel: GameViewModel,
+	onActionClicked: (SudokuGameAction) -> Unit,
 	onPause: () -> Unit,
 	onPrint: () -> Unit
 ) {
@@ -214,21 +279,7 @@ fun GameContent(
 				SudokuGameAction(
 					enabled = !viewModel.win,
 					selected = viewModel.selectedGameAction,
-					onClick = { action ->
-						if (action in SudokuGameActionDefaults.selectableActions) {
-							viewModel.updateSelectedGameAction(
-								if (viewModel.selectedGameAction == action) SudokuGameAction.None
-								else action
-							)
-						} else {
-							when (action) {
-								SudokuGameAction.Undo -> viewModel.undo()
-								SudokuGameAction.Redo -> viewModel.redo()
-								SudokuGameAction.Validate -> viewModel.solve()
-								else -> {}
-							}
-						}
-					},
+					onClick = onActionClicked,
 					modifier = Modifier
 						.fillMaxWidth()
 				)
