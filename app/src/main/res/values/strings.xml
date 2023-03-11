@@ -18,7 +18,7 @@
     <string name="date">Date</string>
     <string name="time">Time</string>
     <string name="difficulty">Difficulty</string>
-    <string name="you_dont_have_a_game_history">You don't have a game history</string>
+    <string name="you_dont_have_a_game_history">You don\'t have a game history</string>
     <string name="include_solved_board">Include solved board</string>
     <string name="export_as_pdf">Export as pdf</string>
     <string name="export_successful">Export successful</string>
