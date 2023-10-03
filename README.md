@@ -2,7 +2,7 @@
 
 <a href='https://play.google.com/store/apps/details?id=com.anafthdev.saku'><img alt='Get it on Google Play' src='https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png' height="70" width="180"/></a>
 
-Sudoku made with Jetpack Compose
+Sudoku made with Jetpack Compose, created by Anaf Naufalian
 
 ## Feature
 - 5 levels of difficulty (fast, easy, normal, hard, evil)
